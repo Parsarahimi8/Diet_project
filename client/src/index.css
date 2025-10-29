@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Noto Sans Arabic Local";
+  src: url("/fonts/NotoSansArabic-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Noto Sans Arabic Local";
+  src: url("/fonts/NotoSansArabic-SemiBold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Lalezar Local";
+  src: url("/fonts/Lalezar-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #979797;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666666;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  @apply overflow-x-hidden h-full;
+}
+
+body {
+  @apply h-full overflow-x-hidden bg-gradient-to-br from-green-100 to-emerald-200;
+}
+
+h1 {
+  @apply font-lalezar text-3xl tracking-tight text-colorHeaderTitle;
+}
+
+h2 {
+  @apply font-lalezar text-2xl tracking-tight text-colorHeaderTitle;
+}
+
+h3 {
+  @apply font-lalezar text-xl tracking-tight text-colorHeaderTitle;
+}
+
+h4 {
+  @apply font-lalezar text-lg tracking-tight text-colorHeaderTitle;
+}
+
+h5 {
+  @apply font-lalezar text-base tracking-tight text-colorHeaderTitle;
+}
+
+h6 {
+  @apply font-lalezar text-[16px] tracking-tight text-colorHeaderTitle;
+}
+
+p {
+  @apply font-noto text-[14px] font-medium text-primary text-pretty;
+}
+
+small {
+  @apply font-noto text-[13px] text-primary;
+}
+
+@media (min-width: 414px) {
+  /*sm*/
+  h1 {
+    @apply text-4xl;
+  }
+  h2 {
+    @apply text-3xl;
+  }
+  h3 {
+    @apply text-2xl;
+  }
+  h4 {
+    @apply text-xl;
+  }
+  h5 {
+    @apply text-lg;
+  }
+  h6 {
+    @apply text-[18px];
+  }
+  p {
+    @apply text-[16px];
+  }
+  small {
+    @apply text-[10px];
+  }
+}
+@media (min-width: 768px) {
+  /*md*/
+  h1 {
+    @apply text-5xl;
+  }
+  h2 {
+    @apply text-4xl;
+  }
+  h3 {
+    @apply text-3xl;
+  }
+  h4 {
+    @apply text-2xl;
+  }
+  h5 {
+    @apply text-xl;
+  }
+  h6 {
+    @apply text-sm;
+  }
+  p {
+    @apply text-xs;
+  }
+  small {
+    @apply text-[13px];
+  }
+}
+@media (min-width: 1024px) {
+  /*lg*/
+  h6 {
+    @apply text-base;
+  }
+  p {
+    @apply text-xs;
+  }
+}
+@media (min-width: 1280px) {
+  /*xl*/
+  h1 {
+    @apply text-6xl;
+  }
+  h2 {
+    @apply text-5xl;
+  }
+  h3 {
+    @apply text-4xl;
+  }
+  h4 {
+    @apply text-3xl;
+  }
+  h5 {
+    @apply text-2xl;
+  }
+  h6 {
+    @apply text-lg;
+  }
+  small {
+    @apply text-[14px];
+  }
+}
+@media (min-width: 1536px) {
+  /*2xl*/
+  h6 {
+    @apply text-xl;
+  }
+  p {
+    @apply text-sm;
+  }
+}
+
+.btn {
+  @apply font-noto font-bold bg-transparent border-2 border-primary rounded-full text-primary hover:shadow-lg;
+}
+
+.btn.btn-primary {
+  @apply bg-btnColor rounded-full text-colorTitleBold shadow-md border-2 hover:border-primary hover:bg-transparent hover:text-primary;
+}
+
+.btn.btn-gradient {
+  @apply bg-gradient-to-r from-fromGradientBtn to-green-400 text-colorHeaderTitle text-textDark shadow-md border-2 hover:border-primary hover:from-transparent hover:to-transparent hover:text-primary font-bold text-xs;
+}
+
+.modal::backdrop {
+  @apply bg-black opacity-70 fixed;
+}
+
+.nav-active {
+  @apply underline underline-offset-[10px] decoration-2 xs:text-green-300 md:text-green-400;
+}
+
+.swiper-pagination-bullet {
+  width: 10px !important;
+  height: 10px !important;
+  background-color: #10b981 !important; /* emerald-500 */
+  opacity: 0.5;
+  margin: 0 4px !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #10b981 !important;
+  opacity: 1;
+}
