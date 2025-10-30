@@ -106,3 +106,4 @@ class AboutDetailAPI(APIView):
     def get(self, request, pk: int):
         obj = get_object_or_404(About, pk=pk)
         return Response(AboutSerializer(obj).data, status=status.HTTP_200_OK)
+
