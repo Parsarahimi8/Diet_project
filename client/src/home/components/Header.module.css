@@ -1,0 +1,3 @@
+.navbar li:hover {
+  @apply transition-transform -translate-y-1;
+}
