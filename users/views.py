@@ -4,12 +4,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from .serializers import RegisterSerializer, LoginSerializer, VerifyOtpSerializer, ResetPasswordSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.core.mail import send_mail
 from django.conf import settings
 import random
 from .models import CustomUser
 from drf_yasg import openapi
+from rest_framework.permissions import AllowAny
 
 
 class RegisterView(APIView):
@@ -123,3 +124,41 @@ class ResetPasswordView(APIView):
         user.save()
 
         return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
+
+
+
+class LogoutView(APIView):
+    parser_classes = [JSONParser]
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'refresh': openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description='Refresh token to invalidate on client (no server blacklist).'
+                ),
+            },
+            required=['refresh']
+        ),
+        responses={
+            200: openapi.Response('Logged out successfully'),
+            400: openapi.Response('Invalid refresh token'),
+            401: openapi.Response('Unauthorized'),
+        }
+    )
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return Response({"error": "refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # چون blacklist فعال نیست، فقط صحت ساختاری/امضای رفرش‌توکن رو چک می‌کنیم
+        try:
+            _ = RefreshToken(refresh_token)
+        except TokenError:
+            return Response({"error": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # نکته: بدون blacklist نمی‌توانیم توکن را در سمت سرور باطل کنیم.
+        # کلاینت باید access/refresh را پاک کند.
+        return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
