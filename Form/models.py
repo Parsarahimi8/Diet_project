@@ -177,6 +177,7 @@ class MiddleForm(models.Model):
         VERY_HIGH = "very_high", "خیلی زیاد"
 
     # ---- Fields ----
+    name = models.CharField(max_length=100,null=True)
     shared_meals_count = models.PositiveSmallIntegerField(
         "تعداد وعده مشترک",
         choices=SharedMeals.choices,

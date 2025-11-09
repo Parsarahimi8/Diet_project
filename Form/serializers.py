@@ -50,6 +50,7 @@ class MiddleFormSerializer(serializers.ModelSerializer):
         model = MiddleForm
         fields = [
             "id",
+            "name",
             "shared_meals_count",
             "relationship_level",
             "influence_level",
