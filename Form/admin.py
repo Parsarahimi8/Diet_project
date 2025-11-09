@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DemographicForm,Form2,Form3,Form4
+from .models import DemographicForm,Form2,Form3,Form4,MiddleForm
 
 @admin.register(DemographicForm)
 class DemographicFormAdmin(admin.ModelAdmin):
@@ -23,4 +23,8 @@ class Form4Admin(admin.ModelAdmin):
     list_display = ("id", "title", "created_at", "updated_at")
     search_fields = ("title",)
 
-
+@admin.register(MiddleForm)
+class MiddleFormAdmin(admin.ModelAdmin):
+    list_display = ("id", "shared_meals_count", "relationship_level", "influence_level", "created_at")
+    list_filter = ("shared_meals_count", "relationship_level", "influence_level")
+    ordering = ("-created_at",)

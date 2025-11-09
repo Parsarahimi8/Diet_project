@@ -155,4 +155,55 @@ class Form4(models.Model):
         return self.title or f"Form4 #{self.pk}"
 
 
+class MiddleForm(models.Model):
+    class SharedMeals(models.IntegerChoices):
+        ONE   = 1, "۱"
+        TWO   = 2, "۲"
+        THREE = 3, "۳"
+        FOUR  = 4, "۴"
+        FIVE  = 5, "۵"
 
+    class RelationshipLevel(models.TextChoices):
+        FAMILY   = "family", "خانواده"
+        FRIEND   = "friend", "دوست"
+        COLLEAGUE= "colleague", "همکار"
+        OTHER    = "other", "سایر"
+
+    class InfluenceLevel(models.TextChoices):
+        NONE      = "none", "هیچ"
+        LOW       = "low", "کم"
+        MEDIUM    = "medium", "متوسط"
+        HIGH      = "high", "زیاد"
+        VERY_HIGH = "very_high", "خیلی زیاد"
+
+    # ---- Fields ----
+    shared_meals_count = models.PositiveSmallIntegerField(
+        "تعداد وعده مشترک",
+        choices=SharedMeals.choices,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+    )
+    relationship_level = models.CharField(
+        "سطح ارتباط",
+        max_length=16,
+        choices=RelationshipLevel.choices,
+    )
+    influence_level = models.CharField(
+        "سطح تاثیر",
+        max_length=16,
+        choices=InfluenceLevel.choices,
+    )
+    created_at = models.DateTimeField("ایجاد", auto_now_add=True)
+    updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
+
+    class Meta:
+        verbose_name = "فرم میانی"
+        verbose_name_plural = "فرم‌های میانی"
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["relationship_level"]),
+            models.Index(fields=["influence_level"]),
+            models.Index(fields=["created_at"]),
+        ]
+
+    def __str__(self):
+        return f"MiddleForm #{self.pk} - {self.get_relationship_level_display()} / {self.get_influence_level_display()}"

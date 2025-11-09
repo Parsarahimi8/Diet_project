@@ -5,10 +5,10 @@ from rest_framework import permissions, status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .models import DemographicForm, Form2, Form3, Form4
+from .models import DemographicForm, Form2, Form3, Form4,MiddleForm
 from .serializers import (
     DemographicFormSerializer,
-    Form2Serializer, Form3Serializer, Form4Serializer
+    Form2Serializer, Form3Serializer, Form4Serializer,MiddleFormSerializer
 )
 
 # ---------- 1) Catalog (GET) ----------
@@ -129,6 +129,30 @@ class Form4CreateView(CreateAPIView):
         operation_summary="ارسال فرم ۴",
         request_body=Form4Serializer,
         responses={201: Form4Serializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class MiddleFormCreateView(CreateAPIView):
+    """
+    ایجاد رکورد جدید MiddleForm
+    """
+    permission_classes = [permissions.AllowAny]
+    queryset = MiddleForm.objects.all()
+    serializer_class = MiddleFormSerializer
+
+    @swagger_auto_schema(
+        operation_summary="ارسال MiddleForm (POST)",
+        operation_description=(
+            "رکوردی شامل تعداد وعده مشترک، سطح ارتباط و سطح تاثیر ایجاد می‌کند.\n\n"
+            "**Choices**\n"
+            "- shared_meals_count: 1 | 2 | 3 | 4 | 5\n"
+            "- relationship_level: family | friend | colleague | other\n"
+            "- influence_level: none | low | medium | high | very_high\n"
+        ),
+        request_body=MiddleFormSerializer,
+        responses={201: MiddleFormSerializer}
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
