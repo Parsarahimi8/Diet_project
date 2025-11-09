@@ -143,7 +143,7 @@ class MiddleFormCreateView(CreateAPIView):
     serializer_class = MiddleFormSerializer
 
     @swagger_auto_schema(
-        operation_summary="ارسال MiddleForm (POST)",
+        operation_summary="افزودن همسفره",
         operation_description=(
             "رکوردی شامل تعداد وعده مشترک، سطح ارتباط و سطح تاثیر ایجاد می‌کند.\n\n"
             "**Choices**\n"

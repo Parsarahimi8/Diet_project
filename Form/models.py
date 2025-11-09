@@ -197,8 +197,8 @@ class MiddleForm(models.Model):
     updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
 
     class Meta:
-        verbose_name = "فرم میانی"
-        verbose_name_plural = "فرم‌های میانی"
+        verbose_name = "افزودن همسفره"
+        verbose_name_plural = "افزودن همسفره"
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=["relationship_level"]),
