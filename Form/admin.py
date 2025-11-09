@@ -25,6 +25,6 @@ class Form4Admin(admin.ModelAdmin):
 
 @admin.register(MiddleForm)
 class MiddleFormAdmin(admin.ModelAdmin):
-    list_display = ("id", "shared_meals_count", "relationship_level", "influence_level", "created_at")
+    list_display = ("id","name", "shared_meals_count", "relationship_level", "influence_level", "created_at")
     list_filter = ("shared_meals_count", "relationship_level", "influence_level")
     ordering = ("-created_at",)
