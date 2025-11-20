@@ -5,10 +5,10 @@ from rest_framework import permissions, status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .models import DemographicForm, Form2, Form3, Form4,MiddleForm
+from .models import DemographicForm, Form3, Form4,MiddleForm
 from .serializers import (
     DemographicFormSerializer,
-    Form2Serializer, Form3Serializer, Form4Serializer,MiddleFormSerializer
+     Form3Serializer, Form4Serializer,MiddleFormSerializer,
 )
 
 # ---------- 1) Catalog (GET) ----------
@@ -87,20 +87,6 @@ class DemographicFormCreateView(CreateAPIView):
         operation_summary="ارسال فرم دموگرافیک (Form1)",
         request_body=DemographicFormSerializer,
         responses={201: DemographicFormSerializer}
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
-class Form2CreateView(CreateAPIView):
-    permission_classes = [permissions.AllowAny]
-    queryset = Form2.objects.all()
-    serializer_class = Form2Serializer
-
-    @swagger_auto_schema(
-        operation_summary="ارسال فرم ۲",
-        request_body=Form2Serializer,
-        responses={201: Form2Serializer}
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)

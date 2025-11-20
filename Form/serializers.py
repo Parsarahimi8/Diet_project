@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DemographicForm, Form2, Form3, Form4, MiddleForm
+from .models import DemographicForm, Form3, Form4, MiddleForm
 
 class DemographicFormSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,11 +20,9 @@ class DemographicFormSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at"]
 
-class Form2Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Form2
-        fields = ["id", "title", "data", "created_at", "updated_at"]
-        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+
 
 class Form3Serializer(serializers.ModelSerializer):
     class Meta:
@@ -69,3 +67,6 @@ class MiddleFormSerializer(serializers.ModelSerializer):
                 "help_text": "یکی از: none, low, medium, high, very_high",
             },
         }
+
+
+

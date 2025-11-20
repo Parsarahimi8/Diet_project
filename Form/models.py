@@ -1,11 +1,15 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 class DemographicForm(models.Model):
-    # ---- Enums (همه داخل همین کلاس) ----
+    # ---- Enums ----
     class Gender(models.TextChoices):
         MALE = "male", "مرد"
         FEMALE = "female", "زن"
+        OTHER = "other", "سایر"
 
     class JobState(models.TextChoices):
         EMPLOYED = "employed", "شاغل"
@@ -13,12 +17,12 @@ class DemographicForm(models.Model):
         OTHER = "other", "سایر"
 
     class IncomeBracket(models.TextChoices):
-        R0_10    = "0-10",   "0-10"
-        R10_30   = "10-30",  "10-30"
-        R30_50   = "30-50",  "30-50"
-        R50_70   = "50-70",  "50-70"
-        R70_90   = "70-90",  "70-90"
-        R90_PLUS = "90+",    "more than 90"
+        R0_10 = "0-10", "0-10"
+        R10_30 = "10-30", "10-30"
+        R30_50 = "30-50", "30-50"
+        R50_70 = "50-70", "50-70"
+        R70_90 = "70-90", "70-90"
+        R90_PLUS = "90+", "more than 90"
 
     class SportDaysPerWeek(models.TextChoices):
         D0_2 = "0-2", "0-2"
@@ -34,65 +38,103 @@ class DemographicForm(models.Model):
     class Province(models.TextChoices):
         AZ_SHARQI = "azarbaijan_sharqi", "آذربایجان شرقی"
         AZ_GHARBI = "azarbaijan_gharbi", "آذربایجان غربی"
-        ARDABIL   = "ardabil", "اردبیل"
-        ESFAHAN   = "esfahan", "اصفهان"
-        ALBORZ    = "alborz", "البرز"
-        ILAM      = "ilam", "ایلام"
-        BUSHEHR   = "bushehr", "بوشهر"
-        TEHRAN    = "tehran", "تهران"
-        CH_BAKHT  = "chaharmahal_bakhtiari", "چهارمحال و بختیاری"
-        KH_JONOOBI= "khorasan_jonoobi", "خراسان جنوبی"
+        ARDABIL = "ardabil", "اردبیل"
+        ESFAHAN = "esfahan", "اصفهان"
+        ALBORZ = "alborz", "البرز"
+        ILAM = "ilam", "ایلام"
+        BUSHEHR = "bushehr", "بوشهر"
+        TEHRAN = "tehran", "تهران"
+        CH_BAKHT = "chaharmahal_bakhtiari", "چهارمحال و بختیاری"
+        KH_JONOOBI = "khorasan_jonoobi", "خراسان جنوبی"
         KH_RAZAVI = "khorasan_razavi", "خراسان رضوی"
-        KH_SHOMALI= "khorasan_shomali", "خراسان شمالی"
+        KH_SHOMALI = "khorasan_shomali", "خراسان شمالی"
         KHUZESTAN = "khuzestan", "خوزستان"
-        ZANJAN    = "zanjan", "زنجان"
-        SEMNAN    = "semnan", "سمنان"
-        SISTAN    = "sistan_baluchestan", "سیستان و بلوچستان"
-        FARS      = "fars", "فارس"
-        QAZVIN    = "qazvin", "قزوین"
-        QOM       = "qom", "قم"
+        ZANJAN = "zanjan", "زنجان"
+        SEMNAN = "semnan", "سمنان"
+        SISTAN = "sistan_baluchestan", "سیستان و بلوچستان"
+        FARS = "fars", "فارس"
+        QAZVIN = "qazvin", "قزوین"
+        QOM = "qom", "قم"
         KURDISTAN = "kurdistan", "کردستان"
-        KERMAN    = "kerman", "کرمان"
-        KERMANSHAH= "kermanshah", "کرمانشاه"
-        KOHGILUYEH= "kohgiluyeh_boyerahmad", "کهگیلویه و بویراحمد"
-        GOLESTAN  = "golestan", "گلستان"
-        GILAN     = "gilan", "گیلان"
-        LORESTAN  = "lorestan", "لرستان"
-        MAZANDARAN= "mazandaran", "مازندران"
-        MARKAZI   = "markazi", "مرکزی"
-        HORMOZG   = "hormozgan", "هرمزگان"
-        HAMEDAN   = "hamedan", "همدان"
-        YAZD      = "yazd", "یزد"
+        KERMAN = "kerman", "کرمان"
+        KERMANSHAH = "kermanshah", "کرمانشاه"
+        KOHGILUYEH = "kohgiluyeh_boyerahmad", "کهگیلویه و بویراحمد"
+        GOLESTAN = "golestan", "گلستان"
+        GILAN = "gilan", "گیلان"
+        LORESTAN = "lorestan", "لرستان"
+        MAZANDARAN = "mazandaran", "مازندران"
+        MARKAZI = "markazi", "مرکزی"
+        HORMOZG = "hormozgan", "هرمزگان"
+        HAMEDAN = "hamedan", "همدان"
+        YAZD = "yazd", "یزد"
 
-    # ---- Fields ----
-    name = models.CharField("نام", max_length=120)
-    age = models.PositiveSmallIntegerField("سن", validators=[MinValueValidator(1), MaxValueValidator(120)])
-    gender = models.CharField("جنسیت", max_length=10, choices=Gender.choices)
+    # ---- Required fields (cannot be null/blank) ----
+    name = models.CharField("نام", max_length=120)  # required
+    age = models.PositiveSmallIntegerField(
+        "سن",
+        validators=[MinValueValidator(1), MaxValueValidator(120)]
+    )  # required
+    gender = models.CharField(
+        "جنسیت",
+        max_length=10,
+        choices=Gender.choices
+    )  # required
 
-    height_cm = models.PositiveSmallIntegerField("قد (سانتی‌متر)", validators=[MinValueValidator(50), MaxValueValidator(250)])
-    weight_kg = models.FloatField("وزن (کیلوگرم)", validators=[MinValueValidator(20), MaxValueValidator(400)])
-
-    education = models.CharField("تحصیلات", max_length=100)
-
-    job_state = models.CharField("وضعیت شغلی/تحصیلی", max_length=10, choices=JobState.choices)
-
-    income_bracket = models.CharField("وضعیت درآمد (میلیون)", max_length=10, choices=IncomeBracket.choices)
-
+    # ---- Optional fields (nullable) ----
+    height_cm = models.PositiveSmallIntegerField(
+        "قد (سانتی‌متر)",
+        validators=[MinValueValidator(50), MaxValueValidator(250)],
+        null=True, blank=True
+    )
+    weight_kg = models.FloatField(
+        "وزن (کیلوگرم)",
+        validators=[MinValueValidator(20), MaxValueValidator(400)],
+        null=True, blank=True
+    )
+    education = models.CharField(
+        "تحصیلات",
+        max_length=100,
+        null=True, blank=True
+    )
+    job_state = models.CharField(
+        "وضعیت شغلی/تحصیلی",
+        max_length=10,
+        choices=JobState.choices,
+        null=True, blank=True
+    )
+    income_bracket = models.CharField(
+        "وضعیت درآمد (میلیون)",
+        max_length=10,
+        choices=IncomeBracket.choices,
+        null=True, blank=True
+    )
     diet_income_percent = models.PositiveSmallIntegerField(
         "درصد درآمدِ تخصیص‌یافته به رژیم",
-        validators=[MinValueValidator(0), MaxValueValidator(100)]
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        null=True, blank=True
     )
-
-    province = models.CharField("استان", max_length=32, choices=Province.choices)  # 32 کفایت می‌کند
-
-    marital_status = models.CharField("وضعیت تاهل", max_length=10, choices=MaritalStatus.choices)
-
-    family_members = models.PositiveSmallIntegerField("تعداد اعضای خانواده", validators=[MinValueValidator(1), MaxValueValidator(30)])
-
+    province = models.CharField(
+        "استان",
+        max_length=32,
+        choices=Province.choices,
+        null=True, blank=True
+    )
+    marital_status = models.CharField(
+        "وضعیت تاهل",
+        max_length=10,
+        choices=MaritalStatus.choices,
+        null=True, blank=True
+    )
+    family_members = models.PositiveSmallIntegerField(
+        "تعداد اعضای خانواده",
+        validators=[MinValueValidator(1), MaxValueValidator(30)],
+        null=True, blank=True
+    )
     sport_days_per_week = models.CharField(
         "تعداد روزهای ورزش در هفته",
         max_length=5,
-        choices=SportDaysPerWeek.choices
+        choices=SportDaysPerWeek.choices,
+        null=True, blank=True
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -103,22 +145,11 @@ class DemographicForm(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.name} - {self.get_province_display()}"
+        return f"{self.name} - {self.get_province_display() if self.province else '—'}"
+
+# ----------form 2 --------------------
 
 
-class Form2(models.Model):
-    title = models.CharField("عنوان", max_length=120, blank=True, default="")
-    data = models.JSONField("داده‌های فرم", blank=True, default=dict)  # هر ساختاری که بخوای
-    created_at = models.DateTimeField("ایجاد", auto_now_add=True)
-    updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
-
-    class Meta:
-        verbose_name = "فرم ۲"
-        verbose_name_plural = "فرم‌های ۲"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return self.title or f"Form2 #{self.pk}"
 
 
 # ---------- Form 3 ----------
