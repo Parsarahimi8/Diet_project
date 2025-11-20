@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DemographicForm, Form3, Form4, MiddleForm
+from .models import DemographicForm,  Form3, Form4, MiddleForm,PWI
 
 class DemographicFormSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,7 +20,19 @@ class DemographicFormSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at"]
 
-
+class PWISerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PWI
+        fields = [
+            "id",
+            "eggs", "dairy", "meat", "poultry",
+            "honey", "fish", "olive", "sugar",
+            "oilsM", "oilsS", "oilolive",
+            "fruit", "vegetable", "nuts", "legumes",
+            "potatoes", "stimuli", "rice", "barley", "wheat",
+            "created_at",
+        ]
+        read_only_fields = ["id", "created_at"]
 
 
 

@@ -5,10 +5,10 @@ from rest_framework import permissions, status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .models import DemographicForm, Form3, Form4,MiddleForm
+from .models import DemographicForm, Form3, Form4,MiddleForm ,PWI
 from .serializers import (
     DemographicFormSerializer,
-     Form3Serializer, Form4Serializer,MiddleFormSerializer,
+     Form3Serializer, Form4Serializer,MiddleFormSerializer,PWISerializer
 )
 
 # ---------- 1) Catalog (GET) ----------
@@ -87,6 +87,25 @@ class DemographicFormCreateView(CreateAPIView):
         operation_summary="ارسال فرم دموگرافیک (Form1)",
         request_body=DemographicFormSerializer,
         responses={201: DemographicFormSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+
+
+class Form2CreateView(CreateAPIView):
+    """
+    ایجاد پاسخ جدید برای فرم تغذیه (Form2 - PWI).
+    """
+    permission_classes = [permissions.AllowAny]
+    queryset = PWI.objects.all()
+    serializer_class = PWISerializer
+
+    @swagger_auto_schema(
+        operation_summary="ارسال فرم تغذیه (Form2 - PWI)",
+        request_body=PWISerializer,
+        responses={201: PWISerializer}
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
