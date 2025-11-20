@@ -88,3 +88,5 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         self.otp = None
         self.otp_created_at = None
         self.save(update_fields=['otp', 'otp_created_at'])
+
+

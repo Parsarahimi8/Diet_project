@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DemographicForm,Form3,Form4,MiddleForm, PWI
+from .models import DemographicForm,Form4,MiddleForm, PWI,PrFood
 
 @admin.register(DemographicForm)
 class DemographicFormAdmin(admin.ModelAdmin):
@@ -30,11 +30,29 @@ class PWIAdmin(admin.ModelAdmin):
     search_fields = ()  # فیلد متنی خاصی نداری؛ اگر بعداً توضیح/کامنت متنی اضافه شد، اینجا اضافه کن.
     ordering = ("-created_at",)
 
-@admin.register(Form3)
-class Form3Admin(admin.ModelAdmin):
-    list_display = ("id", "title", "is_active", "created_at", "updated_at")
-    list_filter = ("is_active",)
-    search_fields = ("title",)
+
+@admin.register(PrFood)
+class PrFoodAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "Eggs", "Dairy", "Meat", "Poultry", "Honey", "Fish",
+        "Olives", "Sugar", "OilsM", "OilsS", "Oil",
+        "Fruit", "vegetables", "Nuts", "Legumes",
+        "Potatoes", "Stimuli", "Rice", "Barley", "Wheat",
+        "created_at", "updated_at",
+    )
+    list_filter = (
+        "Eggs", "Dairy", "Meat", "Poultry", "Honey", "Fish",
+        "Olives", "Sugar", "OilsM", "OilsS", "Oil",
+        "Fruit", "vegetables", "Nuts", "Legumes",
+        "Potatoes", "Stimuli", "Rice", "Barley", "Wheat",
+        "created_at", "updated_at",
+    )
+    search_fields = ()  # اگر بعداً فیلد متنی قابل جست‌وجو اضافه شد، اینجا ست کنید.
+    ordering = ("-created_at",)
+    readonly_fields = ("created_at", "updated_at")
+    date_hierarchy = "created_at"
+    list_per_page = 50
 
 @admin.register(Form4)
 class Form4Admin(admin.ModelAdmin):

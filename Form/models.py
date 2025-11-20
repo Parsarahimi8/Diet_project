@@ -394,20 +394,31 @@ class PWI(models.Model):
 
 
 # ---------- Form 3 ----------
-class Form3(models.Model):
-    title = models.CharField("عنوان", max_length=120, blank=True, default="")
-    data = models.JSONField("داده‌های فرم", blank=True, default=dict)
-    is_active = models.BooleanField("فعال؟", default=True)
+class PrFood(models.Model):
+    Eggs = models.CharField(max_length=1)
+    Dairy = models.CharField(max_length=1)
+    Meat = models.CharField(max_length=1)
+    Poultry = models.CharField(max_length=1)
+    Honey = models.CharField(max_length=1)
+    Fish = models.CharField(max_length=1)
+    Olives = models.CharField(max_length=1)
+    Sugar = models.CharField(max_length=1)
+    OilsM = models.CharField(max_length=1)
+    OilsS = models.CharField(max_length=1)
+    Oil = models.CharField(max_length=1)
+    Fruit = models.CharField(max_length=1)
+    vegetables = models.CharField(max_length=1)
+    Nuts = models.CharField(max_length=1)
+    Legumes = models.CharField(max_length=1)
+    Potatoes = models.CharField(max_length=1)
+    Stimuli = models.CharField(max_length=1)
+    Rice = models.CharField(max_length=1)
+    Barley = models.CharField(max_length=1)
+    Wheat = models.CharField(max_length=1)
     created_at = models.DateTimeField("ایجاد", auto_now_add=True)
     updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
 
-    class Meta:
-        verbose_name = "فرم ۳"
-        verbose_name_plural = "فرم‌های ۳"
-        ordering = ["-created_at"]
 
-    def __str__(self):
-        return self.title or f"Form3 #{self.pk}"
 
 
 # ---------- Form 4 ----------
