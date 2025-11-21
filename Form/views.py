@@ -94,7 +94,7 @@ class DemographicFormCreateView(CreateAPIView):
 
 
 
-class Form2CreateView(CreateAPIView):
+class PWIFormCreateView(CreateAPIView):
     """
     ایجاد پاسخ جدید برای فرم تغذیه (Form2 - PWI).
     """

@@ -3,14 +3,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import RegisterSerializer, LoginSerializer, VerifyOtpSerializer, ResetPasswordSerializer
+from .serializers import RegisterSerializer, LoginSerializer, VerifyOtpSerializer, ResetPasswordSerializer, UserProfileSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.core.mail import send_mail
 from django.conf import settings
 import random
 from .models import CustomUser
 from drf_yasg import openapi
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class RegisterView(APIView):
@@ -162,3 +162,20 @@ class LogoutView(APIView):
         # نکته: بدون blacklist نمی‌توانیم توکن را در سمت سرور باطل کنیم.
         # کلاینت باید access/refresh را پاک کند.
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+
+
+
+class CurrentUserView(APIView):
+    """
+    برگرداندن اطلاعات پروفایل کاربر لاگین‌شده.
+    هدر لازم: Authorization: Bearer <ACCESS_TOKEN>
+    """
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="گرفتن پروفایل کاربر فعلی",
+        responses={200: UserProfileSerializer}
+    )
+    def get(self, request):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
