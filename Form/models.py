@@ -460,21 +460,27 @@ class MiddleForm(models.Model):
         VERY_HIGH = "very_high", "خیلی زیاد"
 
     # ---- Fields ----
-    name = models.CharField(max_length=100,null=True)
+    name = models.CharField(max_length=100, null=True)
     shared_meals_count = models.PositiveSmallIntegerField(
         "تعداد وعده مشترک",
         choices=SharedMeals.choices,
         validators=[MinValueValidator(1), MaxValueValidator(5)],
+        null=True, blank=True
+
     )
     relationship_level = models.CharField(
         "سطح ارتباط",
         max_length=16,
         choices=RelationshipLevel.choices,
+        null=True, blank=True
+
     )
     influence_level = models.CharField(
         "سطح تاثیر",
         max_length=16,
         choices=InfluenceLevel.choices,
+        null=True, blank=True
+
     )
     created_at = models.DateTimeField("ایجاد", auto_now_add=True)
     updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
