@@ -4,12 +4,13 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
 from .models import DemographicForm,  Form4,MiddleForm ,PWI,PrFood
 from .serializers import (
     DemographicFormSerializer,
     Form4Serializer,MiddleFormSerializer,PWISerializer,PrFoodSerializer
 )
+from rest_framework import status
+
 
 # ---------- 1) Catalog (GET) ----------
 class FormsCatalogView(APIView):
@@ -143,26 +144,45 @@ class Form4CreateView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
-
 class MiddleFormCreateView(CreateAPIView):
     """
-    ایجاد رکورد جدید MiddleForm
+    ایجاد رکورد جدید MiddleForm (تکی یا چندتایی)
     """
     permission_classes = [permissions.AllowAny]
     queryset = MiddleForm.objects.all()
     serializer_class = MiddleFormSerializer
 
     @swagger_auto_schema(
-        operation_summary="افزودن همسفره",
+        operation_summary="افزودن همسفره (تکی یا چندتایی)",
         operation_description=(
-            "رکوردی شامل تعداد وعده مشترک، سطح ارتباط و سطح تاثیر ایجاد می‌کند.\n\n"
+            "می‌تواند یک آبجکت یا آرایه‌ای از آبجکت‌ها دریافت کند.\n\n"
+            "ساختار هر آبجکت:\n"
+            "{name: string, shared_meals_count: number, relationship_level: string, influence_level: string}\n\n"
             "**Choices**\n"
             "- shared_meals_count: 1 | 2 | 3 | 4 | 5\n"
             "- relationship_level: family | friend | colleague | other\n"
             "- influence_level: none | low | medium | high | very_high\n"
         ),
-        request_body=MiddleFormSerializer,
-        responses={201: MiddleFormSerializer}
+        # برای Swagger می‌گوییم که می‌تواند آرایه‌ای از MiddleFormSerializer باشد
+        request_body=MiddleFormSerializer(many=True),
+        responses={201: MiddleFormSerializer(many=True)},
     )
     def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        data = request.data
+
+        # اگر داده لیست بود → bulk (many=True)
+        # اگر آبجکت تکی بود → many=False
+        is_many = isinstance(data, list)
+
+        serializer = self.get_serializer(data=data, many=is_many)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        # برای هدر Location در پاسخ (فقط اولین مورد در حالت لیست)
+        if is_many:
+            first_item = serializer.data[0] if serializer.data else None
+            headers = self.get_success_headers(first_item) if first_item else {}
+        else:
+            headers = self.get_success_headers(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
