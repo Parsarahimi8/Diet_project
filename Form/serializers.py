@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import DemographicForm, Form4, MiddleForm,PWI, PrFood
+from .models import DemographicFormInformation, Tablemates,PastWeekIntake, PreferrdFood, FreeShopping
 
-class DemographicFormSerializer(serializers.ModelSerializer):
+class DemographicInformationFormSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DemographicForm
+        model = DemographicFormInformation
         fields = [
             "id",
             "name", "age", "gender",
@@ -20,44 +20,10 @@ class DemographicFormSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at"]
 
-class PWISerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PWI
-        fields = [
-            "id",
-            "eggs", "dairy", "meat", "poultry",
-            "honey", "fish", "olive", "sugar",
-            "oilsM", "oilsS", "oilolive",
-            "fruit", "vegetable", "nuts", "legumes",
-            "potatoes", "stimuli", "rice", "barley", "wheat",
-            "created_at",
-        ]
-        read_only_fields = ["id", "created_at"]
-
-
-class PrFoodSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PrFood
-        fields = [
-            "id",
-            "Eggs", "Dairy", "Meat", "Poultry", "Honey", "Fish",
-            "Olives", "Sugar", "OilsM", "OilsS", "Oil",
-            "Fruit", "vegetables", "Nuts", "Legumes",
-            "Potatoes", "Stimuli", "Rice", "Barley", "Wheat",
-            "created_at", "updated_at",
-        ]
-        read_only_fields = ["id", "created_at", "updated_at"]
 
 
 
-class Form4Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = Form4
-        fields = ["id", "title", "notes", "data", "created_at", "updated_at"]
-        read_only_fields = ["id", "created_at", "updated_at"]
-
-
-class MiddleFormSerializer(serializers.ModelSerializer):
+class TablematesFormSerializer(serializers.ModelSerializer):
     """
     فیلدها و مقادیر مجاز (choices):
       - shared_meals_count: 1 | 2 | 3 | 4 | 5
@@ -65,7 +31,7 @@ class MiddleFormSerializer(serializers.ModelSerializer):
       - influence_level: none | low | medium | high | very_high
     """
     class Meta:
-        model = MiddleForm
+        model = Tablemates
         fields = [
             "id",
             "name",
@@ -87,6 +53,52 @@ class MiddleFormSerializer(serializers.ModelSerializer):
                 "help_text": "یکی از: none, low, medium, high, very_high",
             },
         }
+
+
+class PastWeekIntakeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PastWeekIntake
+        fields = [
+            "id",
+            "eggs", "dairy", "meat", "poultry",
+            "honey", "fish", "olive", "sugar",
+            "oilsM", "oilsS", "oilolive",
+            "fruit", "vegetable", "nuts", "legumes",
+            "potatoes", "stimuli", "rice", "barley", "wheat",
+            "created_at",
+        ]
+        read_only_fields = ["id", "created_at"]
+
+
+class PreferredFoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreferrdFood
+        fields = [
+            "id",
+            "Eggs", "Dairy", "Meat", "Poultry", "Honey", "Fish",
+            "Olives", "Sugar", "OilsM", "OilsS", "Oil",
+            "Fruit", "vegetables", "Nuts", "Legumes",
+            "Potatoes", "Stimuli", "Rice", "Barley", "Wheat",
+            "created_at", "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
+
+class FreeShoppingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeShopping
+        fields = [
+            "id",
+            "Eggs", "Dairy", "Meat", "Poultry", "Honey", "Fish",
+            "Olives", "Sugar", "OilsM", "OilsS", "Oil",
+            "Fruit", "vegetables", "Nuts", "Legumes",
+            "Potatoes", "Stimuli", "Rice", "Barley", "Wheat",
+            "created_at", "updated_at",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at"]
+
+
 
 
 

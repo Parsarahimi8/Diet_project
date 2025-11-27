@@ -1,10 +1,10 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-class DemographicForm(models.Model):
+# ------form 1 ------: 1.1.0------------------
+class DemographicFormInformation(models.Model):
     # ---- Enums ----
     class Gender(models.TextChoices):
         MALE = "male", "مرد"
@@ -147,8 +147,76 @@ class DemographicForm(models.Model):
     def __str__(self):
         return f"{self.name} - {self.get_province_display() if self.province else '—'}"
 
-# ----------form 2 --------------------
-class PWI(models.Model):
+
+
+# ------Household$social-------- 1.2.0-----middleform------------
+
+
+class Tablemates(models.Model):
+
+
+    class SharedMeals(models.IntegerChoices):
+        ONE   = 1, "۱"
+        TWO   = 2, "۲"
+        THREE = 3, "۳"
+        FOUR  = 4, "۴"
+        FIVE  = 5, "۵"
+
+    class RelationshipLevel(models.TextChoices):
+        FAMILY   = "family", "خانواده"
+        FRIEND   = "friend", "دوست"
+        COLLEAGUE= "colleague", "همکار"
+        OTHER    = "other", "سایر"
+
+    class InfluenceLevel(models.TextChoices):
+        NONE      = "none", "هیچ"
+        LOW       = "low", "کم"
+        MEDIUM    = "medium", "متوسط"
+        HIGH      = "high", "زیاد"
+        VERY_HIGH = "very_high", "خیلی زیاد"
+
+    # ---- Fields ----
+    name = models.CharField(max_length=100, null=True)
+    shared_meals_count = models.PositiveSmallIntegerField(
+        "تعداد وعده مشترک",
+        choices=SharedMeals.choices,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        null=True, blank=True
+
+    )
+    relationship_level = models.CharField(
+        "سطح ارتباط",
+        max_length=16,
+        choices=RelationshipLevel.choices,
+        null=True, blank=True
+
+    )
+    influence_level = models.CharField(
+        "سطح تاثیر",
+        max_length=16,
+        choices=InfluenceLevel.choices,
+        null=True, blank=True
+
+    )
+    created_at = models.DateTimeField("ایجاد", auto_now_add=True)
+    updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
+
+    class Meta:
+        verbose_name = "افزودن همسفره"
+        verbose_name_plural = "افزودن همسفره"
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["relationship_level"]),
+            models.Index(fields=["influence_level"]),
+            models.Index(fields=["created_at"]),
+        ]
+
+    def __str__(self):
+        return f"MiddleForm #{self.pk} - {self.get_relationship_level_display()} / {self.get_influence_level_display()}"
+
+
+# ----------form2-------1.3.0  -----diatery intake last week---------------------
+class PastWeekIntake(models.Model):
 
     class Eggs(models.TextChoices):
 
@@ -393,8 +461,8 @@ class PWI(models.Model):
 
 
 
-# ---------- Form 3 ----------
-class PrFood(models.Model):
+# ---------- Form 3 ---preferred food ---1.4.0 ----------
+class PreferrdFood(models.Model):
     Eggs = models.CharField(max_length=1)
     Dairy = models.CharField(max_length=1)
     Meat = models.CharField(max_length=1)
@@ -421,79 +489,29 @@ class PrFood(models.Model):
 
 
 
-# ---------- Form 4 ----------
-class Form4(models.Model):
-    title = models.CharField("عنوان", max_length=120, blank=True, default="")
-    notes = models.TextField("یادداشت‌ها", blank=True, default="")
-    data = models.JSONField("داده‌های فرم", blank=True, default=dict)
+# ---------- Form 4 ----virtual shopping --- 1.5.0 ----------
+
+class FreeShopping(models.Model):
+    Eggs = models.CharField(max_length=1)
+    Dairy = models.CharField(max_length=1)
+    Meat = models.CharField(max_length=1)
+    Poultry = models.CharField(max_length=1)
+    Honey = models.CharField(max_length=1)
+    Fish = models.CharField(max_length=1)
+    Olives = models.CharField(max_length=1)
+    Sugar = models.CharField(max_length=1)
+    OilsM = models.CharField(max_length=1)
+    OilsS = models.CharField(max_length=1)
+    Oil = models.CharField(max_length=1)
+    Fruit = models.CharField(max_length=1)
+    vegetables = models.CharField(max_length=1)
+    Nuts = models.CharField(max_length=1)
+    Legumes = models.CharField(max_length=1)
+    Potatoes = models.CharField(max_length=1)
+    Stimuli = models.CharField(max_length=1)
+    Rice = models.CharField(max_length=1)
+    Barley = models.CharField(max_length=1)
+    Wheat = models.CharField(max_length=1)
     created_at = models.DateTimeField("ایجاد", auto_now_add=True)
     updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
 
-    class Meta:
-        verbose_name = "فرم ۴"
-        verbose_name_plural = "فرم‌های ۴"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return self.title or f"Form4 #{self.pk}"
-
-
-class MiddleForm(models.Model):
-    class SharedMeals(models.IntegerChoices):
-        ONE   = 1, "۱"
-        TWO   = 2, "۲"
-        THREE = 3, "۳"
-        FOUR  = 4, "۴"
-        FIVE  = 5, "۵"
-
-    class RelationshipLevel(models.TextChoices):
-        FAMILY   = "family", "خانواده"
-        FRIEND   = "friend", "دوست"
-        COLLEAGUE= "colleague", "همکار"
-        OTHER    = "other", "سایر"
-
-    class InfluenceLevel(models.TextChoices):
-        NONE      = "none", "هیچ"
-        LOW       = "low", "کم"
-        MEDIUM    = "medium", "متوسط"
-        HIGH      = "high", "زیاد"
-        VERY_HIGH = "very_high", "خیلی زیاد"
-
-    # ---- Fields ----
-    name = models.CharField(max_length=100, null=True)
-    shared_meals_count = models.PositiveSmallIntegerField(
-        "تعداد وعده مشترک",
-        choices=SharedMeals.choices,
-        validators=[MinValueValidator(1), MaxValueValidator(5)],
-        null=True, blank=True
-
-    )
-    relationship_level = models.CharField(
-        "سطح ارتباط",
-        max_length=16,
-        choices=RelationshipLevel.choices,
-        null=True, blank=True
-
-    )
-    influence_level = models.CharField(
-        "سطح تاثیر",
-        max_length=16,
-        choices=InfluenceLevel.choices,
-        null=True, blank=True
-
-    )
-    created_at = models.DateTimeField("ایجاد", auto_now_add=True)
-    updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
-
-    class Meta:
-        verbose_name = "افزودن همسفره"
-        verbose_name_plural = "افزودن همسفره"
-        ordering = ["-created_at"]
-        indexes = [
-            models.Index(fields=["relationship_level"]),
-            models.Index(fields=["influence_level"]),
-            models.Index(fields=["created_at"]),
-        ]
-
-    def __str__(self):
-        return f"MiddleForm #{self.pk} - {self.get_relationship_level_display()} / {self.get_influence_level_display()}"

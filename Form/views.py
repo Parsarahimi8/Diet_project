@@ -4,10 +4,10 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from .models import DemographicForm,  Form4,MiddleForm ,PWI,PrFood
+from .models import DemographicFormInformation,Tablemates,PastWeekIntake,PreferrdFood,FreeShopping
 from .serializers import (
-    DemographicFormSerializer,
-    Form4Serializer,MiddleFormSerializer,PWISerializer,PrFoodSerializer
+    DemographicInformationFormSerializer,
+    TablematesFormSerializer,PastWeekIntakeSerializer,PreferredFoodSerializer,FreeShoppingSerializer
 )
 from rest_framework import status
 
@@ -75,82 +75,32 @@ class FormsCatalogView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
+
 # ---------- 2) Submit endpoints (POST per form) ----------
 class DemographicFormCreateView(CreateAPIView):
     """
     ایجاد پاسخ جدید برای فرم دموگرافیک (Form1).
     """
     permission_classes = [permissions.AllowAny]
-    queryset = DemographicForm.objects.all()
-    serializer_class = DemographicFormSerializer
+    queryset = DemographicFormInformation.objects.all()
+    serializer_class = DemographicInformationFormSerializer
 
     @swagger_auto_schema(
         operation_summary="ارسال فرم دموگرافیک (Form1)",
-        request_body=DemographicFormSerializer,
-        responses={201: DemographicFormSerializer}
+        request_body=DemographicInformationFormSerializer,
+        responses={201: DemographicInformationFormSerializer}
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
-
-
-
-class PWIFormCreateView(CreateAPIView):
-    """
-    ایجاد پاسخ جدید برای فرم تغذیه (Form2 - PWI).
-    """
-    permission_classes = [permissions.AllowAny]
-    queryset = PWI.objects.all()
-    serializer_class = PWISerializer
-
-    @swagger_auto_schema(
-        operation_summary="ارسال فرم تغذیه (Form2 - PWI)",
-        request_body=PWISerializer,
-        responses={201: PWISerializer}
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
-
-
-class PrFoodCreateView(CreateAPIView):
-    """
-    ایجاد پاسخ جدید برای فرم ترجیحات غذایی (Form5 - PrFood).
-    """
-    permission_classes = [permissions.AllowAny]
-    queryset = PrFood.objects.all()
-    serializer_class = PrFoodSerializer
-
-    @swagger_auto_schema(
-        operation_summary="ارسال فرم ترجیحات غذایی (Form5 - PrFood)",
-        request_body=PrFoodSerializer,
-        responses={201: PrFoodSerializer}
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
-class Form4CreateView(CreateAPIView):
-    permission_classes = [permissions.AllowAny]
-    queryset = Form4.objects.all()
-    serializer_class = Form4Serializer
-
-    @swagger_auto_schema(
-        operation_summary="ارسال فرم ۴",
-        request_body=Form4Serializer,
-        responses={201: Form4Serializer}
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
 
 class MiddleFormCreateView(CreateAPIView):
     """
     ایجاد رکورد جدید MiddleForm (تکی یا چندتایی)
     """
     permission_classes = [permissions.AllowAny]
-    queryset = MiddleForm.objects.all()
-    serializer_class = MiddleFormSerializer
+    queryset = Tablemates.objects.all()
+    serializer_class = TablematesFormSerializer
 
     @swagger_auto_schema(
         operation_summary="افزودن همسفره (تکی یا چندتایی)",
@@ -164,8 +114,8 @@ class MiddleFormCreateView(CreateAPIView):
             "- influence_level: none | low | medium | high | very_high\n"
         ),
         # برای Swagger می‌گوییم که می‌تواند آرایه‌ای از MiddleFormSerializer باشد
-        request_body=MiddleFormSerializer(many=True),
-        responses={201: MiddleFormSerializer(many=True)},
+        request_body=TablematesFormSerializer(many=True),
+        responses={201: TablematesFormSerializer(many=True)},
     )
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -186,3 +136,55 @@ class MiddleFormCreateView(CreateAPIView):
             headers = self.get_success_headers(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
+
+class PWIFormCreateView(CreateAPIView):
+    """
+    ایجاد پاسخ جدید برای فرم تغذیه (Form2 - PWI).
+    """
+    permission_classes = [permissions.AllowAny]
+    queryset = PastWeekIntake.objects.all()
+    serializer_class = PastWeekIntakeSerializer
+
+    @swagger_auto_schema(
+        operation_summary="ارسال فرم تغذیه (Form2 - PWI)",
+        request_body=PastWeekIntakeSerializer,
+        responses={201: PastWeekIntakeSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+
+
+class PrFoodCreateView(CreateAPIView):
+    """
+    ایجاد پاسخ جدید برای فرم ترجیحات غذایی (Form5 - PrFood).
+    """
+    permission_classes = [permissions.AllowAny]
+    queryset = PreferrdFood.objects.all()
+    serializer_class = PreferredFoodSerializer
+
+    @swagger_auto_schema(
+        operation_summary="ارسال فرم ترجیحات غذایی (Form5 - PrFood)",
+        request_body=PreferredFoodSerializer,
+        responses={201: PreferredFoodSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class FreeShoppingView(CreateAPIView):
+    permission_classes = [permissions.AllowAny]
+    queryset = FreeShopping.objects.all()
+    serializer_class = FreeShoppingSerializer
+
+    @swagger_auto_schema(
+        operation_summary="ارسال فرم ۴",
+        request_body=FreeShoppingSerializer,
+        responses={201: FreeShoppingSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
