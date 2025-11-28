@@ -164,18 +164,30 @@ class LogoutView(APIView):
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
 
 
-
 class CurrentUserView(APIView):
     """
-    برگرداندن اطلاعات پروفایل کاربر لاگین‌شده.
-    هدر لازم: Authorization: Bearer <ACCESS_TOKEN>
+    برگرداندن اطلاعات پروفایل کاربر لاگین‌شده به‌همراه
+    تمام فرم‌هایی که ارسال کرده.
     """
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_summary="گرفتن پروفایل کاربر فعلی",
+        operation_summary="گرفتن پروفایل کاربر فعلی به‌همراه فرم‌ها",
         responses={200: UserProfileSerializer}
     )
     def get(self, request):
-        serializer = UserProfileSerializer(request.user)
+        # 🔹 برای بهینه‌بودن کوئری‌ها
+        user = (
+            CustomUser.objects
+            .prefetch_related(
+                "demographic_forms",
+                "tablemates",
+                "past_week_intakes",
+                "preferred_foods",
+                "free_shoppings",
+            )
+            .get(pk=request.user.pk)
+        )
+
+        serializer = UserProfileSerializer(user)
         return Response(serializer.data)
