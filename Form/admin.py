@@ -1,14 +1,14 @@
 from django.contrib import admin
-from .models import DemographicForm,Form4,MiddleForm, PWI,PrFood
+from .models import DemographicFormInformation,Tablemates, PastWeekIntake,PreferrdFood,FreeShopping
 
-@admin.register(DemographicForm)
+@admin.register(DemographicFormInformation)
 class DemographicFormAdmin(admin.ModelAdmin):
     list_display = ("name", "age", "gender", "province", "job_state", "income_bracket", "created_at")
     list_filter = ("gender", "province", "job_state", "income_bracket", "marital_status", "sport_days_per_week")
     search_fields = ("name", "education")
 
 
-@admin.register(PWI)
+@admin.register(PastWeekIntake)
 class PWIAdmin(admin.ModelAdmin):
     list_display = (
         "id",
@@ -31,7 +31,7 @@ class PWIAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
 
 
-@admin.register(PrFood)
+@admin.register(PreferrdFood)
 class PrFoodAdmin(admin.ModelAdmin):
     list_display = (
         "id",
@@ -54,12 +54,11 @@ class PrFoodAdmin(admin.ModelAdmin):
     date_hierarchy = "created_at"
     list_per_page = 50
 
-@admin.register(Form4)
+@admin.register(FreeShopping)
 class Form4Admin(admin.ModelAdmin):
-    list_display = ("id", "title", "created_at", "updated_at")
-    search_fields = ("title",)
+    list_display = ("id", "created_at", "updated_at")
 
-@admin.register(MiddleForm)
+@admin.register(Tablemates)
 class MiddleFormAdmin(admin.ModelAdmin):
     list_display = ("id","name", "shared_meals_count", "relationship_level", "influence_level", "created_at")
     list_filter = ("shared_meals_count", "relationship_level", "influence_level")

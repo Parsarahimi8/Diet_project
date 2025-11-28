@@ -1,11 +1,19 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
+
 
 # ------form 1 ------: 1.1.0------------------
 class DemographicFormInformation(models.Model):
-    # ---- Enums ----
+    # ✅ کاربر (از فرانت user id می‌آید)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="demographic_forms",
+        null=True, blank=True,
+        verbose_name="کاربر"
+    )
+
     class Gender(models.TextChoices):
         MALE = "male", "مرد"
         FEMALE = "female", "زن"
@@ -68,19 +76,17 @@ class DemographicFormInformation(models.Model):
         HAMEDAN = "hamedan", "همدان"
         YAZD = "yazd", "یزد"
 
-    # ---- Required fields (cannot be null/blank) ----
-    name = models.CharField("نام", max_length=120)  # required
+    name = models.CharField("نام", max_length=120)
     age = models.PositiveSmallIntegerField(
         "سن",
         validators=[MinValueValidator(1), MaxValueValidator(120)]
-    )  # required
+    )
     gender = models.CharField(
         "جنسیت",
         max_length=10,
         choices=Gender.choices
-    )  # required
+    )
 
-    # ---- Optional fields (nullable) ----
     height_cm = models.PositiveSmallIntegerField(
         "قد (سانتی‌متر)",
         validators=[MinValueValidator(50), MaxValueValidator(250)],
@@ -148,12 +154,16 @@ class DemographicFormInformation(models.Model):
         return f"{self.name} - {self.get_province_display() if self.province else '—'}"
 
 
-
 # ------Household$social-------- 1.2.0-----middleform------------
-
-
 class Tablemates(models.Model):
-
+    # ✅ کاربر
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="tablemates",
+        null=True, blank=True,
+        verbose_name="کاربر"
+    )
 
     class SharedMeals(models.IntegerChoices):
         ONE   = 1, "۱"
@@ -175,28 +185,24 @@ class Tablemates(models.Model):
         HIGH      = "high", "زیاد"
         VERY_HIGH = "very_high", "خیلی زیاد"
 
-    # ---- Fields ----
     name = models.CharField(max_length=100, null=True)
     shared_meals_count = models.PositiveSmallIntegerField(
         "تعداد وعده مشترک",
         choices=SharedMeals.choices,
         validators=[MinValueValidator(1), MaxValueValidator(5)],
         null=True, blank=True
-
     )
     relationship_level = models.CharField(
         "سطح ارتباط",
         max_length=16,
         choices=RelationshipLevel.choices,
         null=True, blank=True
-
     )
     influence_level = models.CharField(
         "سطح تاثیر",
         max_length=16,
         choices=InfluenceLevel.choices,
         null=True, blank=True
-
     )
     created_at = models.DateTimeField("ایجاد", auto_now_add=True)
     updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
@@ -217,9 +223,16 @@ class Tablemates(models.Model):
 
 # ----------form2-------1.3.0  -----diatery intake last week---------------------
 class PastWeekIntake(models.Model):
+    # ✅ کاربر
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="past_week_intakes",
+        null=True, blank=True,
+        verbose_name="کاربر"
+    )
 
     class Eggs(models.TextChoices):
-
         zero = "0", "0"
         one = "1-2", "240"
         two = "3-4", "480"
@@ -359,94 +372,27 @@ class PastWeekIntake(models.Model):
         three = "4-6", "1200"
         four = "+7", "1600"
 
-    eggs = models.CharField(
-        max_length=10,
-        choices=Eggs.choices
-    )
-    dairy = models.CharField(
-        max_length=10,
-        choices=Dairy.choices
-    )
-    meat = models.CharField(
-        max_length=10,
-        choices=Meat.choices
-    )
-    poultry = models.CharField(
-        max_length=10,
-        choices=Eggs.choices
-    )
-    honey = models.CharField(
-        max_length=10,
-        choices=Honey.choices
-    )
-    fish = models.CharField(
-        max_length=10,
-        choices=Fish.choices
-    )
-    olive = models.CharField(
-        max_length=10,
-        choices=Olive.choices
-    )
-    sugar = models.CharField(
-        max_length=10,
-        choices=Sugar.choices
-    )
+    eggs = models.JSONField(default=dict)
+    dairy = models.JSONField(default=dict)
+    meat = models.JSONField(default=dict)
+    poultry = models.JSONField(default=dict)
+    honey = models.JSONField(default=dict)
+    fish = models.JSONField(default=dict)
+    olive = models.JSONField(default=dict)
+    sugar = models.JSONField(default=dict)
+    oilsM = models.JSONField(default=dict)
+    oilsS = models.JSONField(default=dict)
+    oilolive = models.JSONField(default=dict)
+    fruit = models.JSONField(default=dict)
+    vegetable = models.JSONField(default=dict)
+    nuts = models.JSONField(default=dict)
+    legumes = models.JSONField(default=dict)
+    potatoes = models.JSONField(default=dict)
+    stimuli = models.JSONField(default=dict)
+    rice = models.JSONField(default=dict)
+    barley = models.JSONField(default=dict)
+    wheat = models.JSONField(default=dict)
 
-    oilsM = models.CharField(
-        max_length=10,
-        choices=OilsM.choices
-    )
-    oilsS = models.CharField(
-        max_length=10,
-        choices=OilsS.choices
-    )
-
-    oilolive = models.CharField(
-        max_length=10,
-        choices=OilOlive.choices
-    )
-    fruit = models.CharField(
-        max_length=10,
-        choices=Fruit.choices
-    )
-
-    vegetable = models.CharField(
-        max_length=10,
-        choices=Vegetables.choices
-    )
-
-    nuts = models.CharField(
-        max_length=10,
-        choices=Nuts.choices
-    )
-
-    legumes = models.CharField(
-        max_length=10,
-        choices=Legumes.choices
-    )
-
-    potatoes = models.CharField(
-        max_length=10,
-        choices=Potatoes.choices
-    )
-
-    stimuli = models.CharField(
-        max_length=10,
-        choices=Stimuli.choices
-    )
-    rice = models.CharField(
-        max_length=10,
-        choices=Rice.choices
-    )
-
-    barley = models.CharField(
-        max_length=10,
-        choices=Barley.choices
-    )
-    wheat = models.CharField(
-        max_length=10,
-        choices=Wheat.choices
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -459,10 +405,17 @@ class PastWeekIntake(models.Model):
         return f"PWI #{self.pk}"
 
 
-
-
 # ---------- Form 3 ---preferred food ---1.4.0 ----------
 class PreferrdFood(models.Model):
+    # ✅ کاربر
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="preferred_foods",
+        null=True, blank=True,
+        verbose_name="کاربر"
+    )
+
     Eggs = models.CharField(max_length=1)
     Dairy = models.CharField(max_length=1)
     Meat = models.CharField(max_length=1)
@@ -485,13 +438,19 @@ class PreferrdFood(models.Model):
     Wheat = models.CharField(max_length=1)
     created_at = models.DateTimeField("ایجاد", auto_now_add=True)
     updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
-
-
 
 
 # ---------- Form 4 ----virtual shopping --- 1.5.0 ----------
-
 class FreeShopping(models.Model):
+    # ✅ کاربر
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="free_shoppings",
+        null=True, blank=True,
+        verbose_name="کاربر"
+    )
+
     Eggs = models.CharField(max_length=1)
     Dairy = models.CharField(max_length=1)
     Meat = models.CharField(max_length=1)
@@ -514,4 +473,3 @@ class FreeShopping(models.Model):
     Wheat = models.CharField(max_length=1)
     created_at = models.DateTimeField("ایجاد", auto_now_add=True)
     updated_at = models.DateTimeField("به‌روزرسانی", auto_now=True)
-
