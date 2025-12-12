@@ -20,10 +20,30 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            user = serializer.save()
 
+            refresh = RefreshToken.for_user(user)
+            access_token = refresh.access_token
+
+            return Response(
+                {
+                    "message": "User registered successfully",
+                    "access": str(access_token),
+                    "refresh": str(refresh),
+                    "user": {
+                        "id": user.id,
+                        "email": user.email,
+                        "first_name": user.first_name,
+                        "last_name": user.last_name,
+                        "age": user.age,
+                        "gender": user.gender,
+                        "properties": user.properties,
+                    },
+                },
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -165,10 +185,7 @@ class LogoutView(APIView):
 
 
 class CurrentUserView(APIView):
-    """
-    برگرداندن اطلاعات پروفایل کاربر لاگین‌شده به‌همراه
-    تمام فرم‌هایی که ارسال کرده.
-    """
+
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
@@ -176,7 +193,6 @@ class CurrentUserView(APIView):
         responses={200: UserProfileSerializer}
     )
     def get(self, request):
-        # 🔹 برای بهینه‌بودن کوئری‌ها
         user = (
             CustomUser.objects
             .prefetch_related(

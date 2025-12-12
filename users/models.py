@@ -31,25 +31,28 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+
+    first_name = models.CharField(max_length=30, blank=False)
+    last_name = models.CharField(max_length=30, blank=False)
+
+    age = models.PositiveIntegerField(blank=True, null=True)
+
+    gender = models.CharField(blank=True, null=True)
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-
-
-    # OTP fields
+    properties = models.JSONField(blank=True, null=True, default=dict)
     otp = models.CharField(max_length=6, blank=True, null=True)
     otp_created_at = models.DateTimeField(blank=True, null=True)
 
-    # Avoid conflicts with auth.User
     groups = models.ManyToManyField(
         'auth.Group',
-        related_name='custom_users',  # renamed to avoid clashes
+        related_name='custom_users',
         blank=True
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
-        related_name='custom_users',  # renamed to avoid clashes
+        related_name='custom_users',
         blank=True
     )
 
@@ -88,5 +91,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         self.otp = None
         self.otp_created_at = None
         self.save(update_fields=['otp', 'otp_created_at'])
-
-

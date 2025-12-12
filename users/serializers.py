@@ -11,15 +11,33 @@ from Form.serializers import (
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, min_length=8)
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'password']
+        fields = [
+            'email',
+            'first_name',
+            'last_name',
+            'age',
+            'gender',
+            'properties',
+            'password',
+        ]
+        extra_kwargs = {
+            'age': {'required': False},
+            'gender': {'required': False},
+            'properties': {'required': False},
+        }
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(**validated_data)
+        password = validated_data.pop('password')
+        user = CustomUser.objects.create_user(
+            password=password,
+            **validated_data
+        )
         return user
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -42,7 +60,6 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    # 🔹 همه‌ی فرم‌هایی که این یوزر ثبت کرده
     demographic_forms = DemographicInformationFormSerializer(many=True, read_only=True)
     tablemates = TablematesFormSerializer(many=True, read_only=True)
     past_week_intakes = PastWeekIntakeSerializer(many=True, read_only=True)
@@ -53,14 +70,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             "id",
-            "email",
-            "first_name",
-            "last_name",
+            'email',
+            'first_name',
+            'last_name',
+            'age',
+            'gender',
+            'properties',
             "is_active",
             "is_staff",
             "last_login",
-
-            # 🔽 این‌ها اضافه شدند:
             "demographic_forms",
             "tablemates",
             "past_week_intakes",
