@@ -31,14 +31,9 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-
-    first_name = models.CharField(max_length=30, blank=False)
-    last_name = models.CharField(max_length=30, blank=False)
-
+    full_name = models.CharField(max_length=30, blank=False)
     age = models.PositiveIntegerField(blank=True, null=True)
-
-    gender = models.CharField(blank=True, null=True)
-
+    gender = models.CharField(max_length=10, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     properties = models.JSONField(blank=True, null=True, default=dict)

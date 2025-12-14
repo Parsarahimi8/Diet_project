@@ -17,18 +17,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             'email',
-            'first_name',
-            'last_name',
-            'age',
-            'gender',
-            'properties',
+            'full_name',
             'password',
         ]
-        extra_kwargs = {
-            'age': {'required': False},
-            'gender': {'required': False},
-            'properties': {'required': False},
-        }
+
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -71,8 +63,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             'email',
-            'first_name',
-            'last_name',
+            'full_name',
             'age',
             'gender',
             'properties',

@@ -33,8 +33,7 @@ class RegisterView(APIView):
                     "user": {
                         "id": user.id,
                         "email": user.email,
-                        "first_name": user.first_name,
-                        "last_name": user.last_name,
+                        "full_name": user.full_name,
                         "age": user.age,
                         "gender": user.gender,
                         "properties": user.properties,
