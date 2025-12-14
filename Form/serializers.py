@@ -13,7 +13,7 @@ class DemographicInformationFormSerializer(serializers.ModelSerializer):
         model = DemographicFormInformation
         fields = [
             "id",
-            "user",          # ✅
+            "user",
             "name", "age", "gender",
             "height_cm", "weight_kg",
             "education",

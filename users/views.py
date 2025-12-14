@@ -214,14 +214,12 @@ class LogoutView(APIView):
         if not refresh_token:
             return Response({"error": "refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # چون blacklist فعال نیست، فقط صحت ساختاری/امضای رفرش‌توکن رو چک می‌کنیم
         try:
             _ = RefreshToken(refresh_token)
         except TokenError:
             return Response({"error": "Invalid refresh token"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # نکته: بدون blacklist نمی‌توانیم توکن را در سمت سرور باطل کنیم.
-        # کلاینت باید access/refresh را پاک کند.
+
         return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
 
 
@@ -235,15 +233,7 @@ class CurrentUserView(APIView):
     )
     def get(self, request):
         user = (
-            CustomUser.objects
-            .prefetch_related(
-                "demographic_forms",
-                "tablemates",
-                "past_week_intakes",
-                "preferred_foods",
-                "free_shoppings",
-            )
-            .get(pk=request.user.pk)
+            CustomUser.objects.get(pk=request.user.pk)
         )
 
         serializer = UserProfileSerializer(user)

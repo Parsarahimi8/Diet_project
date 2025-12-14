@@ -52,11 +52,6 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    demographic_forms = DemographicInformationFormSerializer(many=True, read_only=True)
-    tablemates = TablematesFormSerializer(many=True, read_only=True)
-    past_week_intakes = PastWeekIntakeSerializer(many=True, read_only=True)
-    preferred_foods = PreferredFoodSerializer(many=True, read_only=True)
-    free_shoppings = FreeShoppingSerializer(many=True, read_only=True)
 
     class Meta:
         model = CustomUser
@@ -70,10 +65,5 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "last_login",
-            "demographic_forms",
-            "tablemates",
-            "past_week_intakes",
-            "preferred_foods",
-            "free_shoppings",
         ]
         read_only_fields = fields
