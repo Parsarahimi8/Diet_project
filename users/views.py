@@ -13,10 +13,54 @@ from drf_yasg import openapi
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
+from drf_yasg import openapi
+
 class RegisterView(APIView):
     parser_classes = [JSONParser]
 
-    @swagger_auto_schema(request_body=RegisterSerializer)
+    @swagger_auto_schema(
+        request_body=RegisterSerializer,
+        responses={
+            201: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "message": openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        example="User registered successfully",
+                    ),
+                    "access": openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        description="JWT access token",
+                    ),
+                    "refresh": openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        description="JWT refresh token",
+                    ),
+                    "user": openapi.Schema(
+                        type=openapi.TYPE_OBJECT,
+                        properties={
+                            "id": openapi.Schema(
+                                type=openapi.TYPE_INTEGER,
+                                example=1,
+                            ),
+                            "email": openapi.Schema(
+                                type=openapi.TYPE_STRING,
+                                format="email",
+                                example="test@example.com",
+                            ),
+                            "full_name": openapi.Schema(
+                                type=openapi.TYPE_STRING,
+                                example="Parsa Rahimi",
+                            ),
+                        },
+                    ),
+                },
+            ),
+            400: openapi.Response(
+                description="Validation error",
+            ),
+        },
+    )
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -34,15 +78,13 @@ class RegisterView(APIView):
                         "id": user.id,
                         "email": user.email,
                         "full_name": user.full_name,
-                        "age": user.age,
-                        "gender": user.gender,
-                        "properties": user.properties,
                     },
                 },
                 status=status.HTTP_201_CREATED
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
