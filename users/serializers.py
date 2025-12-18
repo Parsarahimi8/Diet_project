@@ -70,11 +70,5 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "id",
             'email',
             'full_name',
-            'age',
-            'gender',
-            'properties',
-            "is_active",
-            "is_staff",
-            "last_login",
         ]
         read_only_fields = fields

@@ -273,7 +273,7 @@ class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
-        operation_summary="گرفتن پروفایل کاربر فعلی به‌همراه فرم‌ها",
+        operation_summary="گرفتن پروفایل کاربر فعلی اطلاغات اولیه",
         responses={200: UserProfileSerializer}
     )
     def get(self, request):

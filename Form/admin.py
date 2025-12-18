@@ -1,11 +1,6 @@
 from django.contrib import admin
-from .models import DemographicFormInformation,Tablemates, PastWeekIntake,PreferrdFood,FreeShopping
+from .models import  PastWeekIntake,PreferrdFood,FreeShopping
 
-@admin.register(DemographicFormInformation)
-class DemographicFormAdmin(admin.ModelAdmin):
-    list_display = ("name", "age", "gender", "province", "job_state", "income_bracket", "created_at")
-    list_filter = ("gender", "province", "job_state", "income_bracket", "marital_status", "sport_days_per_week")
-    search_fields = ("name", "education")
 
 
 @admin.register(PastWeekIntake)
@@ -58,9 +53,3 @@ class PrFoodAdmin(admin.ModelAdmin):
 class Form4Admin(admin.ModelAdmin):
     list_display = ("id", "created_at", "updated_at")
 
-@admin.register(Tablemates)
-class MiddleFormAdmin(admin.ModelAdmin):
-    list_display = ("id","name", "shared_meals_count", "relationship_level", "influence_level", "created_at")
-    list_filter = ("shared_meals_count", "relationship_level", "influence_level")
-    ordering = ("-created_at",)
-    

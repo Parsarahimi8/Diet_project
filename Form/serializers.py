@@ -1,68 +1,25 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import DemographicFormInformation, Tablemates, PastWeekIntake, PreferrdFood, FreeShopping
-
+from .models import  PastWeekIntake, PreferrdFood, FreeShopping
+from users.models import  CustomUser
 User = get_user_model()
 
 
-class DemographicInformationFormSerializer(serializers.ModelSerializer):
-    # ✅ user id از فرانت (مثلاً 3)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-
+class DemographicSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DemographicFormInformation
+        model = CustomUser
         fields = [
             "id",
-            "user",
-            "name", "age", "gender",
-            "height_cm", "weight_kg",
-            "education",
-            "job_state",
-            "income_bracket",
-            "diet_income_percent",
-            "province",
-            "marital_status",
-            "family_members",
-            "sport_days_per_week",
-            "created_at",
+            "email",
+            "full_name",
+            "age",
+            "gender",
+            "properties",
         ]
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = ["id"]
 
-
-class TablematesFormSerializer(serializers.ModelSerializer):
-    """
-    فیلدها و مقادیر مجاز (choices):
-      - shared_meals_count: 1 | 2 | 3 | 4 | 5
-      - relationship_level: family | friend | colleague | other
-      - influence_level: none | low | medium | high | very_high
-    """
-    # ✅ user id
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-
-    class Meta:
-        model = Tablemates
-        fields = [
-            "id",
-            "user",              # ✅
-            "name",
-            "shared_meals_count",
-            "relationship_level",
-            "influence_level",
-            "created_at",
-            "updated_at",
-        ]
-        read_only_fields = ["id", "created_at", "updated_at"]
-        extra_kwargs = {
-            "shared_meals_count": {
-                "help_text": "یکی از اعداد 1 تا 5 (تعداد وعده مشترک)",
-            },
-            "relationship_level": {
-                "help_text": "یکی از: family, friend, colleague, other",
-            },
-            "influence_level": {
-                "help_text": "یکی از: none, low, medium, high, very_high",
-            },
-        }
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 # برای categoryName

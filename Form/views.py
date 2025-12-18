@@ -6,20 +6,46 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from .models import (
-    DemographicFormInformation,
-    Tablemates,
     PastWeekIntake,
     PreferrdFood,
     FreeShopping,
 )
 from .serializers import (
-    DemographicInformationFormSerializer,
-    TablematesFormSerializer,
+    DemographicSerializer,
     PastWeekIntakeSerializer,
     PreferredFoodSerializer,
     FreeShoppingSerializer,
 )
 
+class DemographicView(APIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    @swagger_auto_schema(
+        operation_summary="دریافت پروفایل کاربر لاگین‌شده",
+        responses={200: DemographicSerializer},
+    )
+    def get(self, request, *args, **kwargs):
+
+        user = self.get_object()
+        serializer = DemographicSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_summary="ویرایش پروفایل کاربر لاگین‌شده",
+        request_body=DemographicSerializer,
+        responses={200: DemographicSerializer},
+    )
+    def put(self, request, *args, **kwargs):
+
+        user = self.get_object()
+        serializer = DemographicSerializer(user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # ---------- 1) Catalog (GET) ----------
 class FormsCatalogView(APIView):
@@ -86,24 +112,9 @@ class FormsCatalogView(APIView):
 
 # ---------- 2) Submit endpoints (POST per form) ----------
 
-class DemographicFormCreateView(CreateAPIView):
-    """
-    ایجاد پاسخ جدید برای فرم دموگرافیک (Form1).
-    (مرحله اول، بدون پیش‌نیاز)
-    """
-    permission_classes = [permissions.AllowAny]
-    queryset = DemographicFormInformation.objects.all()
-    serializer_class = DemographicInformationFormSerializer
-
-    @swagger_auto_schema(
-        operation_summary="ارسال فرم دموگرافیک (Form1)",
-        request_body=DemographicInformationFormSerializer,
-        responses={201: DemographicInformationFormSerializer}
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
 
 
+'''
 class MiddleFormCreateView(CreateAPIView):
     """
     ایجاد رکورد جدید MiddleForm (تکی یا چندتایی)
@@ -169,7 +180,7 @@ class MiddleFormCreateView(CreateAPIView):
             headers = self.get_success_headers(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
+'''
 
 class PWIFormCreateView(CreateAPIView):
     """
@@ -199,7 +210,7 @@ class PWIFormCreateView(CreateAPIView):
             )
 
         # ۱) باید فرم دموگرافیک داشته باشد
-        if not DemographicFormInformation.objects.filter(user_id=user_id).exists():
+        '''if not DemographicFormInformation.objects.filter(user_id=user_id).exists():
             return Response(
                 {"detail": "ابتدا باید فرم دموگرافیک (Form1) را تکمیل کنید."},
                 status=status.HTTP_400_BAD_REQUEST
@@ -210,11 +221,11 @@ class PWIFormCreateView(CreateAPIView):
             return Response(
                 {"detail": "ابتدا باید فرم همسفره‌ها (Form2) را تکمیل کنید."},
                 status=status.HTTP_400_BAD_REQUEST
-            )
+            )'''
 
         return super().post(request, *args, **kwargs)
 
-
+'''
 class PrFoodCreateView(CreateAPIView):
     """
     ایجاد پاسخ جدید برای فرم ترجیحات غذایی (Form5 - PrFood).
@@ -242,8 +253,7 @@ class PrFoodCreateView(CreateAPIView):
                 {"detail": "فیلد user الزامی است."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        # ۱) فرم دموگرافیک
+       
         if not DemographicFormInformation.objects.filter(user_id=user_id).exists():
             return Response(
                 {"detail": "ابتدا باید فرم دموگرافیک (Form1) را تکمیل کنید."},
@@ -264,7 +274,7 @@ class PrFoodCreateView(CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        return super().post(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs) '''
 
 
 class FreeShoppingView(CreateAPIView):
@@ -297,7 +307,7 @@ class FreeShoppingView(CreateAPIView):
             )
 
         # ۱) فرم دموگرافیک
-        if not DemographicFormInformation.objects.filter(user_id=user_id).exists():
+        '''if not DemographicFormInformation.objects.filter(user_id=user_id).exists():
             return Response(
                 {"detail": "ابتدا باید فرم دموگرافیک (Form1) را تکمیل کنید."},
                 status=status.HTTP_400_BAD_REQUEST
@@ -322,6 +332,6 @@ class FreeShoppingView(CreateAPIView):
             return Response(
                 {"detail": "ابتدا باید فرم ترجیحات غذایی (Form4 - PreferredFood) را تکمیل کنید."},
                 status=status.HTTP_400_BAD_REQUEST
-            )
+            )'''
 
         return super().post(request, *args, **kwargs)
