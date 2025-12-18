@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import  PastWeekIntake, PreferrdFood, FreeShopping
+from .models import PastWeekIntake, PreferrdFood, FreeShopping,Tablemate
 from users.models import  CustomUser
 User = get_user_model()
 
@@ -20,6 +20,20 @@ class DemographicSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
+
+
+
+class TablemateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tablemate
+        fields = [
+            "id",
+            "name",
+            "shared_meals_count",
+            "relationship_level",
+            "influence_level",
+        ]
+        read_only_fields = ["id"]
 
 
 # برای categoryName

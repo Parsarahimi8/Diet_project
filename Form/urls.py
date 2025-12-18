@@ -1,16 +1,16 @@
 from django.urls import path
 from .views import (
-    FormsCatalogView,
     DemographicView,
+    TablemateView,
     PWIFormCreateView,FreeShoppingView
 )
 
-app_name = "form"  # namespace
+app_name = "form"
 
 urlpatterns = [
-    path("forms/", FormsCatalogView.as_view(), name="forms-catalog"),        # GET
-    path("forms/form1/", DemographicView.as_view(), name="form1"), # POST
-    path("forms/form3/", PWIFormCreateView.as_view(), name="form2"),         # POST
-    path("forms/form5/", FreeShoppingView.as_view(), name="form4"),          # POST
+    path("forms/form1/", DemographicView.as_view(), name="form1"),
+    path("forms/form2/", TablemateView.as_view(), name="form2"),
+    path("forms/form3/", PWIFormCreateView.as_view(), name="form3"),
+    path("forms/form5/", FreeShoppingView.as_view(), name="form4"),
 ]
 

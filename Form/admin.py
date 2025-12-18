@@ -1,5 +1,29 @@
 from django.contrib import admin
-from .models import  PastWeekIntake,PreferrdFood,FreeShopping
+from .models import  PastWeekIntake,PreferrdFood,FreeShopping, Tablemate
+
+
+
+@admin.register(Tablemate)
+class TablemateAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name",
+        "user",
+        "shared_meals_count",
+        "relationship_level",
+        "influence_level",
+    )
+    list_filter = (
+        "relationship_level",
+        "influence_level",
+    )
+    search_fields = (
+        "name",
+        "user__email",
+        "user__full_name",
+    )
+    raw_id_fields = ("user",)
+    ordering = ("id",)
 
 
 

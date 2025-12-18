@@ -4,17 +4,21 @@ from rest_framework.response import Response
 from rest_framework import permissions, status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework.parsers import JSONParser
+
 
 from .models import (
     PastWeekIntake,
     PreferrdFood,
     FreeShopping,
+    Tablemate
 )
 from .serializers import (
     DemographicSerializer,
     PastWeekIntakeSerializer,
     PreferredFoodSerializer,
     FreeShoppingSerializer,
+    TablemateSerializer
 )
 
 class DemographicView(APIView):
@@ -47,68 +51,41 @@ class DemographicView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# ---------- 1) Catalog (GET) ----------
-class FormsCatalogView(APIView):
+
+
+class TablemateView(APIView):
     """
-    لیست چهار فرم موجود: عنوان، توضیح، endpoint ارسال (POST).
+    ایجاد چند هم‌سفره (Tablemate) برای کاربر لاگین‌شده در یک درخواست.
+    مثال: کاربر ۱۰ نفر هم‌سفره دارد و همه را یکجا ارسال می‌کند.
     """
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
 
     @swagger_auto_schema(
-        operation_summary="دریافت فهرست فرم‌ها",
-        operation_description="چهار فرم فعال را با عنوان و آدرس POST بازمی‌گرداند.",
-        responses={200: openapi.Schema(
-            type=openapi.TYPE_OBJECT,
-            properties={
-                "forms": openapi.Schema(
-                    type=openapi.TYPE_ARRAY,
-                    items=openapi.Items(type=openapi.TYPE_OBJECT, properties={
-                        "key": openapi.Schema(type=openapi.TYPE_STRING, description="شناسه‌ی کوتاه فرم"),
-                        "title": openapi.Schema(type=openapi.TYPE_STRING),
-                        "description": openapi.Schema(type=openapi.TYPE_STRING),
-                        "endpoint": openapi.Schema(type=openapi.TYPE_STRING, description="مسیر POST این فرم"),
-                        "method": openapi.Schema(type=openapi.TYPE_STRING, default="POST"),
-                    })
-                )
-            }
-        )}
+        operation_summary="ایجاد هم‌سفره‌ها برای کاربر لاگین‌شده (به‌صورت آرایه)",
+        request_body=TablemateSerializer(many=True),
+        responses={201: TablemateSerializer(many=True)},
     )
-    def get(self, request):
-        base = "/api/forms"  # ریشه‌ی این اپ در پروژه
-        data = {
-            "forms": [
-                {
-                    "key": "form1",
-                    "title": "فرم دموگرافیک",
-                    "description": "اطلاعات پایه: سن، جنسیت، قد/وزن، تحصیلات، شغل، درآمد، استان، تاهل، اعضای خانواده، ورزش.",
-                    "endpoint": f"{base}/form1/",
-                    "method": "POST",
-                },
-                {
-                    "key": "form2",
-                    "title": "فرم ۲ (سادۀ قابل گسترش)",
-                    "description": "ساختار آزاد با JSON برای توسعه‌های بعدی.",
-                    "endpoint": f"{base}/form2/",
-                    "method": "POST",
-                },
-                {
-                    "key": "form3",
-                    "title": "فرم ۳ (سادۀ قابل گسترش)",
-                    "description": "شامل فیلد is_active برای سناریوهای وضعیت‌دار.",
-                    "endpoint": f"{base}/form3/",
-                    "method": "POST",
-                },
-                {
-                    "key": "form4",
-                    "title": "فرم ۴ (سادۀ قابل گسترش)",
-                    "description": "دارای notes و JSON برای انعطاف بالا.",
-                    "endpoint": f"{base}/form4/",
-                    "method": "POST",
-                },
-            ]
-        }
-        return Response(data, status=status.HTTP_200_OK)
+    def post(self, request, *args, **kwargs):
 
+        serializer = TablemateSerializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+
+        tablemate_objects = []
+        for item in serializer.validated_data:
+            tablemate_objects.append(
+                Tablemate(
+                    user=user,
+                    **item,
+                )
+            )
+
+        created_tablemates = Tablemate.objects.bulk_create(tablemate_objects)
+
+        output_serializer = TablemateSerializer(created_tablemates, many=True)
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
 # ---------- 2) Submit endpoints (POST per form) ----------
 

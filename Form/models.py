@@ -1,8 +1,42 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
+from users.models import CustomUser
 
-# ----------form2-------1.3.0  -----diatery intake last week---------------------
+
+# ----------form2-------1.2.0  -----Tablemates Data---------------------
+
+class Tablemate(models.Model):
+
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="tablemates",
+    )
+    name = models.CharField(max_length=100)
+    shared_meals_count = models.PositiveIntegerField(default=0)
+    relationship_level = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    influence_level = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = "Tablemate"
+        verbose_name_plural = "Tablemates"
+
+    def __str__(self):
+        return f"{self.name} (user={self.user.email})"
+
+
+
+
+# ----------form3-------1.3.0  -----diatery intake last week---------------------
 class PastWeekIntake(models.Model):
     # ✅ کاربر
     user = models.ForeignKey(
