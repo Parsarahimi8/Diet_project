@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import  PastWeekIntake,PreferrdFood,FreeShopping, Tablemate
+from .models import Tablemate, PastWeekIntakes,FoodGroup,Category
 
 
 
@@ -27,53 +27,33 @@ class TablemateAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(PastWeekIntake)
-class PWIAdmin(admin.ModelAdmin):
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "title")
+    search_fields = ("name", "title")
+    ordering = ("id",)
+
+
+@admin.register(FoodGroup)
+class FoodGroupAdmin(admin.ModelAdmin):
+    list_display = ("id", "code", "name", "title", "category")
+    list_filter = ("category",)
+    search_fields = ("name", "title", "code")
+    raw_id_fields = ("category",)
+    ordering = ("id",)
+
+
+@admin.register(PastWeekIntakes)
+class PastWeekIntakesAdmin(admin.ModelAdmin):
     list_display = (
         "id",
-        "eggs", "dairy", "meat", "poultry",
-        "honey", "fish", "olive", "sugar",
-        "oilsM", "oilsS", "oilolive",
-        "fruit", "vegetable", "nuts", "legumes",
-        "potatoes", "stimuli", "rice", "barley", "wheat",
-        "created_at",
+        "user",
+        "food_group",
+        "value",
+        "percent_usage",
+        "date",
     )
-    list_filter = (
-        "eggs", "dairy", "meat", "poultry",
-        "honey", "fish", "olive", "sugar",
-        "oilsM", "oilsS", "oilolive",
-        "fruit", "vegetable", "nuts", "legumes",
-        "potatoes", "stimuli", "rice", "barley", "wheat",
-        "created_at",
-    )
-    search_fields = ()  # فیلد متنی خاصی نداری؛ اگر بعداً توضیح/کامنت متنی اضافه شد، اینجا اضافه کن.
-    ordering = ("-created_at",)
-
-
-@admin.register(PreferrdFood)
-class PrFoodAdmin(admin.ModelAdmin):
-    list_display = (
-        "id",
-        "Eggs", "Dairy", "Meat", "Poultry", "Honey", "Fish",
-        "Olives", "Sugar", "OilsM", "OilsS", "Oil",
-        "Fruit", "vegetables", "Nuts", "Legumes",
-        "Potatoes", "Stimuli", "Rice", "Barley", "Wheat",
-        "created_at", "updated_at",
-    )
-    list_filter = (
-        "Eggs", "Dairy", "Meat", "Poultry", "Honey", "Fish",
-        "Olives", "Sugar", "OilsM", "OilsS", "Oil",
-        "Fruit", "vegetables", "Nuts", "Legumes",
-        "Potatoes", "Stimuli", "Rice", "Barley", "Wheat",
-        "created_at", "updated_at",
-    )
-    search_fields = ()  # اگر بعداً فیلد متنی قابل جست‌وجو اضافه شد، اینجا ست کنید.
-    ordering = ("-created_at",)
-    readonly_fields = ("created_at", "updated_at")
-    date_hierarchy = "created_at"
-    list_per_page = 50
-
-@admin.register(FreeShopping)
-class Form4Admin(admin.ModelAdmin):
-    list_display = ("id", "created_at", "updated_at")
-
+    list_filter = ("food_group", "date")
+    search_fields = ("user__email", "user__full_name", "food_group__title")
+    raw_id_fields = ("user", "food_group")
+    ordering = ("-date",)
