@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .serializers import RegisterSerializer, LoginSerializer, VerifyOtpSerializer, ResetPasswordSerializer, UserProfileSerializer
+from .serializers import RegisterSerializer, LoginSerializer, VerifyOtpSerializer, ResetPasswordSerializer, UserProfileSerializer, RefreshTokenSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.core.mail import send_mail
 from django.conf import settings
@@ -101,6 +101,51 @@ class LoginView(APIView):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         })
+
+
+
+
+class TokenRefreshView(APIView):
+    parser_classes = [JSONParser]
+
+    @swagger_auto_schema(
+        request_body=RefreshTokenSerializer,
+        responses={
+            200: openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    "access": openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        description="New JWT access token",
+                    ),
+                },
+            ),
+            400: openapi.Response(
+                description="Invalid or expired refresh token",
+            ),
+        },
+    )
+    def post(self, request):
+        serializer = RefreshTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        refresh_token = serializer.validated_data["refresh"]
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = refresh.access_token
+
+            return Response(
+                {
+                    "access": str(access_token),
+                },
+                status=status.HTTP_200_OK,
+            )
+        except TokenError:
+            return Response(
+                {"detail": "Invalid or expired refresh token"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class ForgotPasswordView(APIView):

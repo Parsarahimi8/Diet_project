@@ -1,13 +1,8 @@
 from rest_framework import serializers
 from .models import CustomUser
 from django.contrib.auth import authenticate
-from Form.serializers import (
-    DemographicInformationFormSerializer,
-    TablematesFormSerializer,
-    PastWeekIntakeSerializer,
-    PreferredFoodSerializer,
-    FreeShoppingSerializer,
-)
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -41,6 +36,22 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid credentials")
         data['user'] = user
         return data
+
+
+
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        refresh_token = attrs.get("refresh")
+
+        try:
+            # Validate refresh token (structure + signature + expiry)
+            RefreshToken(refresh_token)
+        except TokenError:
+            raise serializers.ValidationError("Invalid or expired refresh token")
+
+        return attrs
 class VerifyOtpSerializer(serializers.Serializer):
     email = serializers.EmailField()
     otp = serializers.CharField(max_length=6)
