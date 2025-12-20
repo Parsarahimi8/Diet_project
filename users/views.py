@@ -205,6 +205,7 @@ class VerifyOtpView(APIView):
         return Response({"error": "Invalid or expired OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 class ResetPasswordView(APIView):
 
     @swagger_auto_schema(request_body=ResetPasswordSerializer)
@@ -213,7 +214,6 @@ class ResetPasswordView(APIView):
         serializer.is_valid(raise_exception=True)
 
         email = serializer.validated_data['email']
-        otp = serializer.validated_data['otp']
         new_password = serializer.validated_data['new_password']
 
         try:
@@ -221,12 +221,10 @@ class ResetPasswordView(APIView):
         except CustomUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        # Verify OTP from model, then reset password and clear OTP
-        if not user.verify_otp(otp):
-            return Response({"error": "Invalid or expired OTP"}, status=status.HTTP_400_BAD_REQUEST)
-
         user.set_password(new_password)
+
         user.clear_otp()
+
         user.save()
 
         return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
