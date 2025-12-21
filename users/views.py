@@ -118,29 +118,39 @@ class TokenRefreshView(APIView):
                         type=openapi.TYPE_STRING,
                         description="New JWT access token",
                     ),
+                    "refresh": openapi.Schema(
+                        type=openapi.TYPE_STRING,
+                        description="New JWT refresh token",
+                    ),
                 },
+                required=["access", "refresh"],
             ),
-            400: openapi.Response(
-                description="Invalid or expired refresh token",
-            ),
+            400: openapi.Response(description="Invalid or expired refresh token"),
         },
     )
     def post(self, request):
         serializer = RefreshTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        refresh_token = serializer.validated_data["refresh"]
+        refresh_token_str = serializer.validated_data["refresh"]
 
         try:
-            refresh = RefreshToken(refresh_token)
-            access_token = refresh.access_token
+            old_refresh = RefreshToken(refresh_token_str)
+
+            # ساخت access جدید از refresh قدیمی
+            new_access = old_refresh.access_token
+
+            # ساخت refresh جدید (rotation در سطح API)
+            new_refresh = RefreshToken.for_user(old_refresh.user)
 
             return Response(
                 {
-                    "access": str(access_token),
+                    "access": str(new_access),
+                    "refresh": str(new_refresh),
                 },
                 status=status.HTTP_200_OK,
             )
+
         except TokenError:
             return Response(
                 {"detail": "Invalid or expired refresh token"},

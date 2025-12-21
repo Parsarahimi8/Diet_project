@@ -43,15 +43,13 @@ class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
     def validate(self, attrs):
-        refresh_token = attrs.get("refresh")
-
+        token_str = attrs.get("refresh")
         try:
-            # Validate refresh token (structure + signature + expiry)
-            RefreshToken(refresh_token)
+            RefreshToken(token_str)  # signature/exp/structure validation
         except TokenError:
-            raise serializers.ValidationError("Invalid or expired refresh token")
-
+            raise serializers.ValidationError({"refresh": "Invalid or expired refresh token"})
         return attrs
+
 class VerifyOtpSerializer(serializers.Serializer):
     email = serializers.EmailField()
     otp = serializers.CharField(max_length=6)
