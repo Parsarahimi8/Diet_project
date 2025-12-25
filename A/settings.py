@@ -57,7 +57,7 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
@@ -169,13 +169,10 @@ AUTH_USER_MODEL = 'users.CustomUser'  # replace 'users' with your app name
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'Bearer': {                 # اسم نمایشی
-            'type': 'apiKey',       # نوع در OpenAPI v2
-            'name': 'Authorization',# نام هدر
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
             'in': 'header',
-            # نکته: مقدار را باید به صورت 'Bearer <token>' وارد کنی
         },
     },
-    # اختیاری: اگر دوست داری همه‌ی Endpointها پیش‌فرض نیاز به Bearer داشته باشن:
-    # 'DEFAULT_API_SECURITY': [{'Bearer': []}],
 }

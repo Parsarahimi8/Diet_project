@@ -42,7 +42,6 @@ class FoodGroupAdmin(admin.ModelAdmin):
     raw_id_fields = ("category",)
     ordering = ("id",)
 
-
 @admin.register(PastWeekIntakes)
 class PastWeekIntakesAdmin(admin.ModelAdmin):
     list_display = (
@@ -51,9 +50,10 @@ class PastWeekIntakesAdmin(admin.ModelAdmin):
         "food_group",
         "value",
         "percent_usage",
-        "date",
+        "created_at",
     )
-    list_filter = ("food_group", "date")
+    list_filter = ("food_group", "created_at")
     search_fields = ("user__email", "user__full_name", "food_group__title")
     raw_id_fields = ("user", "food_group")
-    ordering = ("-date",)
+    ordering = ("-created_at",)
+

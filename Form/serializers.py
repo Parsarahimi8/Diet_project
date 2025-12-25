@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import  Tablemate, PastWeekIntakes
+from .models import  Tablemate, PastWeekIntakes, Category, FoodGroup
 from users.models import  CustomUser
 User = get_user_model()
 
@@ -52,9 +52,7 @@ class PastWeekIntakeBulkCreateSerializer(serializers.Serializer):
     items = PastWeekIntakeItemSerializer(many=True)
 
 class PastWeekIntakeSerializer(serializers.ModelSerializer):
-    """
-    خروجی نهایی برای هر ردیف PastWeekIntake.
-    """
+
     class Meta:
         model = PastWeekIntakes
         fields = [
@@ -63,6 +61,36 @@ class PastWeekIntakeSerializer(serializers.ModelSerializer):
             "food_group",
             "value",
             "percent_usage",
-            "date",
+            "created_at",
         ]
-        read_only_fields = ["id", "user", "date"]
+        read_only_fields = ["id", "user", "created_at"]
+
+
+
+class FoodGroupNestedSerializer(serializers.ModelSerializer):
+    categoryId = serializers.IntegerField(source="category_id", read_only=True)
+
+    class Meta:
+        model = FoodGroup
+        fields = [
+            "id",
+            "code",
+            "name",
+            "title",
+            "categoryId",
+            "properties",
+        ]
+
+
+class CategoryWithFoodGroupsSerializer(serializers.ModelSerializer):
+    foodGroups = FoodGroupNestedSerializer(source="food_groups", many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+            "title",
+            "properties",
+            "foodGroups",
+        ]

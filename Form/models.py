@@ -88,9 +88,8 @@ class PastWeekIntakes(models.Model):
     )
     value = models.FloatField(
     )
-    percent_usage = models.FloatField(blank=True)
-    date = models.DateTimeField(auto_now=True,null=True)
-
+    percent_usage = models.FloatField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     class Meta:
         verbose_name = "Past Week Intake"
         verbose_name_plural = "Past Week Intakes"
