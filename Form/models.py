@@ -96,3 +96,25 @@ class PastWeekIntakes(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.food_group.title} on {self.date}"
+
+
+class PreferredFood(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="preferred_foods",
+    )
+    food_group = models.ForeignKey(
+        "FoodGroup",
+        on_delete=models.CASCADE,
+        related_name="preferred_by_users",
+    )
+    priority = models.PositiveSmallIntegerField(default=1)
+
+    class Meta:
+        verbose_name = "Preferred Food"
+        verbose_name_plural = "Preferred Foods"
+        ordering = ("user_id", "priority", "id")
+
+    def __str__(self):
+        return f"{self.user.email} - {self.food_group.title} (priority={self.priority})"

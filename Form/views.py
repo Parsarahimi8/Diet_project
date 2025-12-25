@@ -9,7 +9,7 @@ from django.db import transaction
 from .models import Tablemate, PastWeekIntakes, Category
 from .serializers import (
     DemographicSerializer,
-    TablemateSerializer,
+    TablemateBulkCreateSerializer, TablemateSerializer,
     PastWeekIntakeBulkCreateSerializer,
     PastWeekIntakeSerializer,
     CategoryWithFoodGroupsSerializer
@@ -43,28 +43,25 @@ class DemographicView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class TablemateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
 
     @swagger_auto_schema(
         operation_summary="ایجاد هم‌سفره‌ها برای کاربر لاگین‌شده",
-        request_body=TablemateSerializer(many=True),
+        request_body=TablemateBulkCreateSerializer,
         responses={201: TablemateSerializer(many=True)},
     )
     def post(self, request, *args, **kwargs):
-        serializer = TablemateSerializer(data=request.data, many=True)
+        serializer = TablemateBulkCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = request.user
+        items = serializer.validated_data["tablemates"]
 
-        tablemate_objects = [
-            Tablemate(user=user, **item)
-            for item in serializer.validated_data
-        ]
-
+        tablemate_objects = [Tablemate(user=user, **item) for item in items]
         created_tablemates = Tablemate.objects.bulk_create(tablemate_objects)
+
         output_serializer = TablemateSerializer(created_tablemates, many=True)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 

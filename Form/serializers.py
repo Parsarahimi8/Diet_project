@@ -22,20 +22,25 @@ class DemographicSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-
 class TablemateSerializer(serializers.ModelSerializer):
+    sharedMealsCount = serializers.IntegerField(source="shared_meals_count")
+    relationshipLevel = serializers.CharField(source="relationship_level", allow_blank=True, required=False)
+    influenceLevel = serializers.CharField(source="influence_level", allow_blank=True, required=False)
+
     class Meta:
         model = Tablemate
         fields = [
             "id",
             "name",
-            "shared_meals_count",
-            "relationship_level",
-            "influence_level",
+            "sharedMealsCount",
+            "relationshipLevel",
+            "influenceLevel",
         ]
         read_only_fields = ["id"]
 
 
+class TablemateBulkCreateSerializer(serializers.Serializer):
+    tablemates = TablemateSerializer(many=True)
 
 class PastWeekIntakeItemSerializer(serializers.ModelSerializer):
     class Meta:
