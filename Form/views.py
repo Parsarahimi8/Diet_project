@@ -154,3 +154,41 @@ class CategoryFoodGroupListView(APIView):
         )
         serializer = CategoryWithFoodGroupsSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import permissions, status
+from rest_framework.parsers import JSONParser
+from drf_yasg.utils import swagger_auto_schema
+
+from .models import PreferredFood
+from .serializers import PreferredFoodBulkCreateSerializer, PreferredFoodSerializer
+
+
+class PreferredFoodTableCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
+
+    @swagger_auto_schema(
+        operation_summary="ایجاد PreferredFood (آیتم‌ها به‌صورت آرایه)",
+        request_body=PreferredFoodBulkCreateSerializer,
+        responses={201: PreferredFoodSerializer(many=True)},
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = PreferredFoodBulkCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        items = serializer.validated_data["items"]
+
+        preferred_objects = [
+            PreferredFood(user=user, **item)
+            for item in items
+        ]
+
+        created = PreferredFood.objects.bulk_create(preferred_objects)
+
+        output = PreferredFoodSerializer(created, many=True)
+        return Response(output.data, status=status.HTTP_201_CREATED)

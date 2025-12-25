@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tablemate, PastWeekIntakes,FoodGroup,Category
+from .models import Tablemate, PastWeekIntakes,FoodGroup,Category,PreferredFood
 
 
 
@@ -57,3 +57,10 @@ class PastWeekIntakesAdmin(admin.ModelAdmin):
     raw_id_fields = ("user", "food_group")
     ordering = ("-created_at",)
 
+@admin.register(PreferredFood)
+class PreferredFoodAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "food_group", "priority")
+    list_filter = ("priority", "food_group")
+    search_fields = ("user__email", "user__full_name", "food_group__title", "food_group__name")
+    raw_id_fields = ("user", "food_group")
+    ordering = ("user_id", "priority", "id")

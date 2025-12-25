@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import  Tablemate, PastWeekIntakes, Category, FoodGroup
+from .models import  Tablemate, PastWeekIntakes, Category, FoodGroup, PreferredFood
 from users.models import  CustomUser
 User = get_user_model()
 
@@ -99,3 +99,25 @@ class CategoryWithFoodGroupsSerializer(serializers.ModelSerializer):
             "properties",
             "foodGroups",
         ]
+
+class PreferredFoodItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreferredFood
+        fields = [
+            "food_group",
+            "priority",
+        ]
+
+class PreferredFoodBulkCreateSerializer(serializers.Serializer):
+    items = PreferredFoodItemSerializer(many=True)
+
+class PreferredFoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PreferredFood
+        fields = [
+            "id",
+            "user",
+            "food_group",
+            "priority",
+        ]
+        read_only_fields = ["id", "user"]
