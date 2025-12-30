@@ -182,6 +182,7 @@ class PreferredFoodTableCreateView(APIView):
         output = PreferredFoodSerializer(created, many=True)
         return Response(output.data, status=status.HTTP_201_CREATED)
 
+
 class FoodGroupListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

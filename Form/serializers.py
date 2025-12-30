@@ -124,12 +124,11 @@ class PreferredFoodSerializer(serializers.ModelSerializer):
 
 
 class FoodGroupListSerializer(serializers.ModelSerializer):
-    foodgroup_id = serializers.IntegerField(source="id", read_only=True)
 
     class Meta:
         model = FoodGroup
         fields = [
-            "foodgroup_id",
+            "id",
             "title",
             "properties",
         ]
