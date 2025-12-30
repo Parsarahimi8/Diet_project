@@ -99,15 +99,18 @@ class CategoryWithFoodGroupsSerializer(serializers.ModelSerializer):
             "properties",
             "foodGroups",
         ]
-
 class PreferredFoodItemSerializer(serializers.ModelSerializer):
+    food_group_id = serializers.PrimaryKeyRelatedField(
+        queryset=FoodGroup.objects.all(),
+        source="food_group"
+    )
+
     class Meta:
         model = PreferredFood
         fields = [
-            "food_group",
+            "food_group_id",
             "priority",
         ]
-
 class PreferredFoodBulkCreateSerializer(serializers.Serializer):
     items = PreferredFoodItemSerializer(many=True)
 
