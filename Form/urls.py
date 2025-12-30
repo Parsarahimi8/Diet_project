@@ -4,7 +4,8 @@ from .views import (
     TablemateView,
     PastWeekIntakeTableCreateView,
     CategoryFoodGroupListView,
-    PreferredFoodTableCreateView)
+    PreferredFoodTableCreateView,
+    FoodGroupListView)
 
 app_name = "form"
 
@@ -14,6 +15,7 @@ urlpatterns = [
     path("forms/form3/", PastWeekIntakeTableCreateView.as_view(), name="form3"),
     path("forms/form4/", CategoryFoodGroupListView.as_view(), name="form4"),
     path("forms/form5/", PreferredFoodTableCreateView.as_view(), name="form5"),
+    path("forms/form6/", FoodGroupListView.as_view(), name="form6"),
 
 ]
 

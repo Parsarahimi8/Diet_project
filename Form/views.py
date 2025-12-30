@@ -6,13 +6,14 @@ from rest_framework.parsers import JSONParser
 from django.db import transaction
 
 
-from .models import Tablemate, PastWeekIntakes, Category
+from .models import Tablemate, PastWeekIntakes, Category,PreferredFood, FoodGroup
 from .serializers import (
     DemographicSerializer,
     TablemateBulkCreateSerializer, TablemateSerializer,
     PastWeekIntakeBulkCreateSerializer,
     PastWeekIntakeSerializer,
-    CategoryWithFoodGroupsSerializer
+    CategoryWithFoodGroupsSerializer,
+    PreferredFoodBulkCreateSerializer, PreferredFoodSerializer, FoodGroupListSerializer
 )
 
 
@@ -155,18 +156,6 @@ class CategoryFoodGroupListView(APIView):
         serializer = CategoryWithFoodGroupsSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import permissions, status
-from rest_framework.parsers import JSONParser
-from drf_yasg.utils import swagger_auto_schema
-
-from .models import PreferredFood
-from .serializers import PreferredFoodBulkCreateSerializer, PreferredFoodSerializer
-
-
 class PreferredFoodTableCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
@@ -192,3 +181,15 @@ class PreferredFoodTableCreateView(APIView):
 
         output = PreferredFoodSerializer(created, many=True)
         return Response(output.data, status=status.HTTP_201_CREATED)
+
+class FoodGroupListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="لیست همه FoodGroup ها",
+        responses={200: FoodGroupListSerializer(many=True)},
+    )
+    def get(self, request, *args, **kwargs):
+        qs = FoodGroup.objects.all().order_by("id")
+        serializer = FoodGroupListSerializer(qs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
