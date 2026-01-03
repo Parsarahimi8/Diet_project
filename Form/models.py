@@ -34,9 +34,10 @@ class Tablemate(models.Model):
         return f"{self.name} (user={self.user.email})"
 
 class Category(models.Model):
-
+    code = models.IntegerField(unique=True, db_index=True)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=200)
+
     properties = models.JSONField(
         blank=True,
         null=True,
@@ -46,20 +47,23 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
+        ordering = ("code", "id")
 
     def __str__(self):
-        return self.title or self.name
+        return f"{self.title} (code={self.code})"
+
 
 class FoodGroup(models.Model):
-
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         related_name="food_groups",
     )
-    code = models.IntegerField()
+
+    code = models.IntegerField(db_index=True)
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=200)
+
     properties = models.JSONField(
         blank=True,
         null=True,
@@ -69,9 +73,16 @@ class FoodGroup(models.Model):
     class Meta:
         verbose_name = "Food Group"
         verbose_name_plural = "Food Groups"
-
+        ordering = ("category__code", "code", "id")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["category", "code"],
+                name="uniq_foodgroup_category_code"
+            ),
+        ]
     def __str__(self):
-        return f"{self.title} (code={self.code})"
+        return f"{self.title} (cat={self.category.code}, code={self.code})"
+
 
 class PastWeekIntakes(models.Model):
 
@@ -118,3 +129,4 @@ class PreferredFood(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.food_group.title} (priority={self.priority})"
+
