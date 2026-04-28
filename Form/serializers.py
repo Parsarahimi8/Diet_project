@@ -162,6 +162,12 @@ class FreeShoppingSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "user"]
 
+class FreeShoppingSerializer(serializers.Serializer):
+    id = serializers.IntegerField(source="food_group.id")
+    title = serializers.CharField(source="food_group.title")
+    value = serializers.IntegerField()
+
+
 class LimitedShoppingItemSerializer(serializers.Serializer):
     food_group_id = serializers.PrimaryKeyRelatedField(
         queryset=FoodGroup.objects.all(),

@@ -239,6 +239,7 @@ class FreeShoppingListView(APIView):
         serializer = FreeShoppingSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class LimitedShoppingCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
