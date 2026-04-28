@@ -6,14 +6,18 @@ from rest_framework.parsers import JSONParser
 from django.db import transaction
 
 
-from .models import Tablemate, PastWeekIntakes, Category,PreferredFood, FoodGroup
+from .models import Tablemate, PastWeekIntakes, Category,PreferredFood, FoodGroup, FreeShopping, LimitedShopping
 from .serializers import (
     DemographicSerializer,
     TablemateBulkCreateSerializer, TablemateSerializer,
     PastWeekIntakeBulkCreateSerializer,
     PastWeekIntakeSerializer,
     CategoryWithFoodGroupsSerializer,
-    PreferredFoodBulkCreateSerializer, PreferredFoodSerializer, FoodGroupListSerializer
+    PreferredFoodBulkCreateSerializer, PreferredFoodSerializer, FoodGroupListSerializer,
+    FreeShoppingBulkCreateSerializer, FreeShoppingSerializer,
+    LimitedShoppingBulkCreateSerializer, LimitedShoppingSerializer,
+    PreferredFoodListSerializer
+
 )
 
 
@@ -196,4 +200,79 @@ class FoodGroupListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class FreeShoppingCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
 
+    @swagger_auto_schema(
+        operation_summary="ایجاد FreeShopping (به صورت آرایه‌ای)",
+        request_body=FreeShoppingBulkCreateSerializer,
+        responses={201: FreeShoppingSerializer(many=True)},
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = FreeShoppingBulkCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        items = serializer.validated_data["items"]
+
+        objects = [
+            FreeShopping(user=user, **item)
+            for item in items
+        ]
+
+        created_items = FreeShopping.objects.bulk_create(objects)
+
+        output = FreeShoppingSerializer(created_items, many=True)
+        return Response(output.data, status=status.HTTP_201_CREATED)
+
+
+class FreeShoppingListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="لیست همه FreeShopping های کاربر",
+        responses={200: FreeShoppingSerializer(many=True)},
+    )
+    def get(self, request, *args, **kwargs):
+        qs = FreeShopping.objects.filter(user=request.user).order_by("id")
+        serializer = FreeShoppingSerializer(qs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class LimitedShoppingCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
+
+    @swagger_auto_schema(
+        operation_summary="ایجاد LimitedShopping (به صورت آرایه‌ای)",
+        request_body=LimitedShoppingBulkCreateSerializer,
+        responses={201: LimitedShoppingSerializer(many=True)},
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = LimitedShoppingBulkCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        items = serializer.validated_data["items"]
+
+        objects = [
+            LimitedShopping(user=user, **item)
+            for item in items
+        ]
+
+        created_items = LimitedShopping.objects.bulk_create(objects)
+
+        output = LimitedShoppingSerializer(created_items, many=True)
+        return Response(output.data, status=status.HTTP_201_CREATED)
+
+class PreferredFoodListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_summary="لیست PreferredFood های کاربر",
+        responses={200: PreferredFoodListSerializer(many=True)},
+    )
+    def get(self, request, *args, **kwargs):
+        qs = PreferredFood.objects.filter(user=request.user).order_by("priority", "id")
+        serializer = PreferredFoodListSerializer(qs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

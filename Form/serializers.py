@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import  Tablemate, PastWeekIntakes, Category, FoodGroup, PreferredFood
+from .models import  Tablemate, PastWeekIntakes, Category, FoodGroup, PreferredFood , FreeShopping, LimitedShopping
 from users.models import  CustomUser
 User = get_user_model()
 
@@ -133,5 +133,64 @@ class FoodGroupListSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "code",
             "properties",
         ]
+
+
+
+#################################################
+
+class FreeShoppingItemSerializer(serializers.Serializer):
+    food_group_id = serializers.PrimaryKeyRelatedField(
+        queryset=FoodGroup.objects.all(),
+        source="food_group"
+    )
+    value = serializers.FloatField()
+
+class FreeShoppingBulkCreateSerializer(serializers.Serializer):
+    items = FreeShoppingItemSerializer(many=True)
+
+class FreeShoppingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FreeShopping
+        fields = [
+            "id",
+            "user",
+            "food_group",
+            "value",
+        ]
+        read_only_fields = ["id", "user"]
+
+class LimitedShoppingItemSerializer(serializers.Serializer):
+    food_group_id = serializers.PrimaryKeyRelatedField(
+        queryset=FoodGroup.objects.all(),
+        source="food_group"
+    )
+    value = serializers.FloatField()
+    offset_price = serializers.FloatField()
+    offset_health = serializers.FloatField()
+    offset_environment = serializers.FloatField()
+
+class LimitedShoppingBulkCreateSerializer(serializers.Serializer):
+    items = LimitedShoppingItemSerializer(many=True)
+
+class LimitedShoppingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LimitedShopping
+        fields = [
+            "id",
+            "user",
+            "food_group",
+            "value",
+            "offset_price",
+            "offset_health",
+            "offset_environment",
+        ]
+        read_only_fields = ["id", "user"]
+
+
+class PreferredFoodListSerializer(serializers.Serializer):
+    priority = serializers.IntegerField()
+    food_group_id = serializers.IntegerField(source="food_group.id")
+    food_group_title = serializers.CharField(source="food_group.title")

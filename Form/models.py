@@ -130,3 +130,49 @@ class PreferredFood(models.Model):
     def __str__(self):
         return f"{self.user.email} - {self.food_group.title} (priority={self.priority})"
 
+
+class FreeShopping(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="free_shoppings",
+    )
+    food_group = models.ForeignKey(
+        "FoodGroup",
+        on_delete=models.CASCADE,
+        related_name="free_shopping_items",
+    )
+    value = models.FloatField()
+
+    class Meta:
+        ordering = ("user_id", "id")
+
+    def __str__(self):
+        return f"{self.user.email} - {self.food_group.title} (value={self.value})"
+
+
+class LimitedShopping(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="limited_shoppings",
+    )
+    food_group = models.ForeignKey(
+        "FoodGroup",
+        on_delete=models.CASCADE,
+        related_name="limited_shopping_items",
+    )
+    value = models.FloatField()
+    offset_price = models.FloatField()
+    offset_health = models.FloatField()
+    offset_environment = models.FloatField()
+
+    class Meta:
+        ordering = ("user_id", "id")
+
+    def __str__(self):
+        return (
+            f"{self.user.email} - {self.food_group.title} "
+            f"(value={self.value}, price={self.offset_price}, "
+            f"health={self.offset_health}, env={self.offset_environment})"
+        )
