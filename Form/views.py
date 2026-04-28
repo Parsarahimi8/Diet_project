@@ -194,3 +194,6 @@ class FoodGroupListView(APIView):
         qs = FoodGroup.objects.all().order_by("id")
         serializer = FoodGroupListSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
