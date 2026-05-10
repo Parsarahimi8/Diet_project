@@ -266,6 +266,9 @@ class LimitedShoppingCreateView(APIView):
         output = LimitedShoppingSerializer(created_items, many=True)
         return Response(output.data, status=status.HTTP_201_CREATED)
 
+
+    # d new changes
+
 class PreferredFoodListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
