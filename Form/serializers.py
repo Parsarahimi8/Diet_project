@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import  Tablemate, PastWeekIntakes, Category, FoodGroup, PreferredFood , FreeShopping, LimitedShopping
+from .models import  Tablemate, PastWeekIntakes, Category, FoodGroup, PreferredFood , FreeShopping, LimitedShopping, SocialAlignment
 from users.models import  CustomUser
 User = get_user_model()
 
@@ -200,3 +200,15 @@ class PreferredFoodListSerializer(serializers.Serializer):
     priority = serializers.IntegerField()
     food_group_id = serializers.IntegerField(source="food_group.id")
     food_group_title = serializers.CharField(source="food_group.title")
+
+
+
+class SocialAlignmentCreateSerializer(serializers.Serializer):
+    individualism_degree = serializers.FloatField()
+
+class SocialAlignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialAlignment
+        fields = ["id", "user", "individualism_degree"]
+        read_only_fields = ["id", "user"]
+

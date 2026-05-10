@@ -176,3 +176,20 @@ class LimitedShopping(models.Model):
             f"(value={self.value}, price={self.offset_price}, "
             f"health={self.offset_health}, env={self.offset_environment})"
         )
+
+class SocialAlignment(models.Model):
+    user = models.OneToOneField(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="social_alignment"
+    )
+    individualism_degree = models.FloatField()
+
+    class Meta:
+        verbose_name = "Social Alignment"
+        verbose_name_plural = "Social Alignments"
+
+    def __str__(self):
+        return f"{self.user.email} - individualism={self.individualism_degree}"
+
+

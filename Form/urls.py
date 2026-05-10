@@ -9,8 +9,9 @@ from .views import (
     FreeShoppingCreateView,
     FreeShoppingListView,
     LimitedShoppingCreateView,
-    PreferredFoodListView
-    )
+    PreferredFoodListView,
+    SocialAlignmentCreateView
+)
 
 app_name = "form"
 
@@ -25,9 +26,7 @@ urlpatterns = [
     path("forms/form8/", FreeShoppingListView.as_view(), name="freeshopping-list"),
     path("forms/form9/", LimitedShoppingCreateView.as_view(), name="limitedshopping-create"),
     path("forms/form10/", PreferredFoodListView.as_view(), name="preferredfood-list"),
-
-
-
+    path("forms/form11/", SocialAlignmentCreateView.as_view(), name="socialalignment-create"),
 
 ]
 

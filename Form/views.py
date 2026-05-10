@@ -5,8 +5,8 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.parsers import JSONParser
 from django.db import transaction
 
-
-from .models import Tablemate, PastWeekIntakes, Category,PreferredFood, FoodGroup, FreeShopping, LimitedShopping
+from .models import Tablemate, PastWeekIntakes, Category, PreferredFood, FoodGroup, FreeShopping, LimitedShopping, \
+    SocialAlignment
 from .serializers import (
     DemographicSerializer,
     TablemateBulkCreateSerializer, TablemateSerializer,
@@ -16,7 +16,7 @@ from .serializers import (
     PreferredFoodBulkCreateSerializer, PreferredFoodSerializer, FoodGroupListSerializer,
     FreeShoppingBulkCreateSerializer, FreeShoppingSerializer,
     LimitedShoppingBulkCreateSerializer, LimitedShoppingSerializer,
-    PreferredFoodListSerializer
+    PreferredFoodListSerializer, SocialAlignmentCreateSerializer, SocialAlignmentSerializer
 
 )
 
@@ -280,3 +280,29 @@ class PreferredFoodListView(APIView):
         qs = PreferredFood.objects.filter(user=request.user).order_by("priority", "id")
         serializer = PreferredFoodListSerializer(qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SocialAlignmentCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
+
+    @swagger_auto_schema(
+        operation_summary="ایجاد Social Alignment",
+        request_body=SocialAlignmentCreateSerializer,
+        responses={201: SocialAlignmentSerializer()},
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = SocialAlignmentCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        individualism = serializer.validated_data["individualism_degree"]
+
+        # اگر از قبل وجود داشت آپدیت شود
+        obj, created = SocialAlignment.objects.update_or_create(
+            user=user,
+            defaults={"individualism_degree": individualism}
+        )
+
+        output = SocialAlignmentSerializer(obj)
+        return Response(output.data, status=status.HTTP_201_CREATED)
