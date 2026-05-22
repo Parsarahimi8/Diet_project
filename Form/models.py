@@ -152,30 +152,20 @@ class FreeShopping(models.Model):
 
 
 class LimitedShopping(models.Model):
-    user = models.ForeignKey(
-        CustomUser,
-        on_delete=models.CASCADE,
-        related_name="limited_shoppings",
-    )
-    food_group = models.ForeignKey(
-        "FoodGroup",
-        on_delete=models.CASCADE,
-        related_name="limited_shopping_items",
-    )
-    value = models.FloatField()
-    offset_price = models.FloatField()
-    offset_health = models.FloatField()
-    offset_environment = models.FloatField()
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="limited_shoppings")
+    food_group = models.ForeignKey("FoodGroup", on_delete=models.CASCADE, related_name="limited_shopping_items")
 
-    class Meta:
-        ordering = ("user_id", "id")
+    title = models.CharField(max_length=200, default="Unknown")
+    position_price = models.FloatField(default=0.0)
+    position_health = models.FloatField(default=0.0)
+    position_environment = models.FloatField(default=0.0)
+    position_available = models.FloatField(default=0.0)
 
-    def __str__(self):
-        return (
-            f"{self.user.email} - {self.food_group.title} "
-            f"(value={self.value}, price={self.offset_price}, "
-            f"health={self.offset_health}, env={self.offset_environment})"
-        )
+    importance_price = models.FloatField(default=0.0)
+    importance_health = models.FloatField(default=0.0)
+    importance_environment = models.FloatField(default=0.0)
+    importance_available = models.FloatField(default=0.0)
+
 
 class SocialAlignment(models.Model):
     user = models.OneToOneField(

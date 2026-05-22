@@ -48,6 +48,7 @@ class DemographicView(APIView):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class TablemateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
@@ -75,6 +76,7 @@ class PastWeekIntakeTableCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
 
+    # ---------- POST ----------
     @swagger_auto_schema(
         operation_summary="ایجاد جدول مصرف هفتگی (created_at خودکار، آیتم‌ها به‌صورت آرایه)",
         request_body=PastWeekIntakeBulkCreateSerializer,
@@ -93,10 +95,10 @@ class PastWeekIntakeTableCreateView(APIView):
         ]
 
         created_intakes = PastWeekIntakes.objects.bulk_create(intake_objects)
-
         output_serializer = PastWeekIntakeSerializer(created_intakes, many=True)
         return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
+    # ---------- PUT ----------
     @swagger_auto_schema(
         operation_summary="ویرایش جدول مصرف هفتگی (آپدیت/ایجاد بر اساس food_group برای کاربر لاگین‌شده)",
         request_body=PastWeekIntakeBulkCreateSerializer,
@@ -119,9 +121,9 @@ class PastWeekIntakeTableCreateView(APIView):
 
                 obj = (
                     PastWeekIntakes.objects
-                        .filter(user=user, food_group=food_group)
-                        .order_by("-created_at")
-                        .first()
+                    .filter(user=user, food_group=food_group)
+                    .order_by("-created_at")
+                    .first()
                 )
 
                 if obj:
@@ -140,6 +142,7 @@ class PastWeekIntakeTableCreateView(APIView):
 
         output_serializer = PastWeekIntakeSerializer(updated_or_created, many=True)
         return Response(output_serializer.data, status=status.HTTP_200_OK)
+
 
 
 
@@ -245,7 +248,7 @@ class LimitedShoppingCreateView(APIView):
     parser_classes = [JSONParser]
 
     @swagger_auto_schema(
-        operation_summary="ایجاد LimitedShopping (به صورت آرایه‌ای)",
+        operation_summary="ایجاد LimitedShopping جدید با فیلدهای موقعیت و اهمیت",
         request_body=LimitedShoppingBulkCreateSerializer,
         responses={201: LimitedShoppingSerializer(many=True)},
     )
@@ -262,10 +265,8 @@ class LimitedShoppingCreateView(APIView):
         ]
 
         created_items = LimitedShopping.objects.bulk_create(objects)
-
         output = LimitedShoppingSerializer(created_items, many=True)
-        return Response(output.data, status=status.HTTP_201_CREATED)
-
+        return Response(output.data, status=201)
 
     # d new changes
 

@@ -12,11 +12,13 @@ class DemographicSerializer(serializers.ModelSerializer):
             "id",
             "email",
             "full_name",
-            "age",
+            "birth_date",
             "gender",
+            "demographic_group",
             "properties",
         ]
         read_only_fields = ["id"]
+
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
@@ -42,22 +44,20 @@ class TablemateSerializer(serializers.ModelSerializer):
 class TablemateBulkCreateSerializer(serializers.Serializer):
     tablemates = TablemateSerializer(many=True)
 
-class PastWeekIntakeItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PastWeekIntakes
-        fields = [
-            "food_group",
-            "value",
-            "percent_usage",
-        ]
+class PastWeekIntakeItemSerializer(serializers.Serializer):
+    foodGroupId = serializers.PrimaryKeyRelatedField(
+        queryset=FoodGroup.objects.all(),
+        source="food_group"
+    )
+    value = serializers.FloatField()
+    percent_usage = serializers.FloatField(required=False, allow_null=True)
 
 
 class PastWeekIntakeBulkCreateSerializer(serializers.Serializer):
-
     items = PastWeekIntakeItemSerializer(many=True)
 
-class PastWeekIntakeSerializer(serializers.ModelSerializer):
 
+class PastWeekIntakeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PastWeekIntakes
         fields = [
@@ -169,30 +169,31 @@ class FreeShoppingSerializer(serializers.Serializer):
 
 
 class LimitedShoppingItemSerializer(serializers.Serializer):
-    food_group_id = serializers.PrimaryKeyRelatedField(
+    foodGroupId = serializers.PrimaryKeyRelatedField(
         queryset=FoodGroup.objects.all(),
         source="food_group"
     )
-    value = serializers.FloatField()
-    offset_price = serializers.FloatField()
-    offset_health = serializers.FloatField()
-    offset_environment = serializers.FloatField()
+
+    title = serializers.CharField(max_length=200)
+    positionPrice = serializers.FloatField(source="position_price")
+    positionHealth = serializers.FloatField(source="position_health")
+    positionEnvironment = serializers.FloatField(source="position_environment")
+    positionAvailable = serializers.FloatField(source="position_available")
+
+    importancePrice = serializers.FloatField(source="importance_price")
+    importanceHealth = serializers.FloatField(source="importance_health")
+    importanceEnvironment = serializers.FloatField(source="importance_environment")
+    importanceAvailable = serializers.FloatField(source="importance_available")
+
 
 class LimitedShoppingBulkCreateSerializer(serializers.Serializer):
     items = LimitedShoppingItemSerializer(many=True)
 
+
 class LimitedShoppingSerializer(serializers.ModelSerializer):
     class Meta:
         model = LimitedShopping
-        fields = [
-            "id",
-            "user",
-            "food_group",
-            "value",
-            "offset_price",
-            "offset_health",
-            "offset_environment",
-        ]
+        fields = "__all__"
         read_only_fields = ["id", "user"]
 
 

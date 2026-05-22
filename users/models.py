@@ -30,10 +30,26 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    DEMOGRAPHIC_CHOICES = [
+        ('female4_8', 'Female 4-8'), ('male4_8', 'Male 4-8'),
+        ('female9_13', 'Female 9-13'), ('male9_13', 'Male 9-13'),
+        ('female14_18', 'Female 14-18'), ('male14_18', 'Male 14-18'),
+        ('female19_30', 'Female 19-30'), ('male19_30', 'Male 19-30'),
+        ('female31_50', 'Female 31-50'), ('male31_50', 'Male 31-50'),
+        ('female51', 'Female 51+'), ('male51', 'Male 51+'),
+    ]
+
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=30, blank=False)
-    age = models.PositiveIntegerField(blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
+
+    demographic_group = models.CharField(
+        max_length=20,
+        choices=DEMOGRAPHIC_CHOICES,
+        blank=True,
+        null=True
+    )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     properties = models.JSONField(blank=True, null=True, default=dict)

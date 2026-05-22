@@ -16,17 +16,26 @@ from .views import (
 app_name = "form"
 
 urlpatterns = [
-    path("forms/form1/", DemographicView.as_view(), name="form1"),
-    path("forms/form2/", TablemateView.as_view(), name="form2"),
-    path("forms/form3/", PastWeekIntakeTableCreateView.as_view(), name="form3"),
-    path("forms/form4/", CategoryFoodGroupListView.as_view(), name="form4"),
-    path("forms/form5/", PreferredFoodTableCreateView.as_view(), name="form5"),
-    path("forms/form6/", FoodGroupListView.as_view(), name="form6"),
-    path("forms/form7/", FreeShoppingCreateView.as_view(), name="freeshopping-create"),
-    path("forms/form8/", FreeShoppingListView.as_view(), name="freeshopping-list"),
-    path("forms/form9/", LimitedShoppingCreateView.as_view(), name="limitedshopping-create"),
-    path("forms/form10/", PreferredFoodListView.as_view(), name="preferredfood-list"),
-    path("forms/form11/", SocialAlignmentCreateView.as_view(), name="socialalignment-create"),
+    # --- Demographic ---
+    path("demographic/", DemographicView.as_view(), name="demographic"),
 
+    # --- Tablemate ---
+    path("tablemate/", TablemateView.as_view(), name="tablemate"),
+
+    # --- Intake ---
+    path("intake/past-week/", PastWeekIntakeTableCreateView.as_view(), name="past-week-intake"),
+
+    # --- Food Categories & Groups ---
+    path("food/categories/", CategoryFoodGroupListView.as_view(), name="category-food-list"),
+    path("food/groups/", FoodGroupListView.as_view(), name="food-group-list"),
+    path("food/preferred/", PreferredFoodTableCreateView.as_view(), name="preferred-food-create"),
+    path("food/preferred/list/", PreferredFoodListView.as_view(), name="preferred-food-list"),
+
+    # --- Shopping ---
+    path("shopping/free/create/", FreeShoppingCreateView.as_view(), name="free-shopping-create"),
+    path("shopping/free/list/", FreeShoppingListView.as_view(), name="free-shopping-list"),
+    path("shopping/limited/create/", LimitedShoppingCreateView.as_view(), name="limited-shopping-create"),
+
+    # --- Social ---
+    path("social/alignment/", SocialAlignmentCreateView.as_view(), name="social-alignment"),
 ]
-
