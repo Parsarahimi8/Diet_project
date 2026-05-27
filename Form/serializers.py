@@ -15,10 +15,13 @@ class DemographicSerializer(serializers.ModelSerializer):
             "birth_date",
             "gender",
             "demographic_group",
+            "sportDaysPerWeek",
             "properties",
         ]
         read_only_fields = ["id"]
-
+        extra_kwargs = {
+            "sportDaysPerWeek": {"required": False},
+        }
 
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)

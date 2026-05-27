@@ -39,6 +39,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('female51', 'Female 51+'), ('male51', 'Male 51+'),
     ]
 
+    SPORT_DAYS_PER_WEEK_CHOICES = [
+        ('Sedentary', 'Sedentary'),
+        ('Moderately Active', 'Moderately Active'),
+        ('Active', 'Active'),
+    ]
+
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=30, blank=False)
     birth_date = models.DateField(blank=True, null=True)
@@ -50,6 +56,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         blank=True,
         null=True
     )
+
+    sportDaysPerWeek = models.CharField(
+        max_length=30,
+        choices=SPORT_DAYS_PER_WEEK_CHOICES,
+        default='Sedentary'
+    )
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     properties = models.JSONField(blank=True, null=True, default=dict)
